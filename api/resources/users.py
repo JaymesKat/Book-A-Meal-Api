@@ -37,7 +37,6 @@ class User(Resource):
         'isCaterer': True
     }
 ]
-    def get(self):
-        pass
-    def post(self):
-        pass
+    def add(self, user):
+        self.users.append(user)
+    

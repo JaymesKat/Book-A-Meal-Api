@@ -3,16 +3,15 @@ from api.resources.meals import Meal
 
 class Menu(Resource):
 
-    menu = [
-         {
-            'meal_ids': [1,2,3,4]
+    menu =  {
+            'meal_ids': [4,1,3,2]
         }
-    ]
 
-    def get_menu_list(self):
-        menu = {}
-        menu['meals'] = Meal.get_menu_list(self.menu['meal_ids'])
-        return menu
+    def get_meals_on_menu(self):
+        meals = []
+        for id in self.menu['meal_ids']:
+            meals.append(Meal.get_meal(Meal,id))
+        return meals
 
-    def post(self):
-        pass
+    def add(self, meal_id):
+        self.menu['meal_ids'].append(meal_id)

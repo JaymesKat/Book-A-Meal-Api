@@ -25,14 +25,11 @@ class Meal(Resource):
         }
     ]
 
-    def getMeals(self, *menuList):
-        meals = []
-        for item in menuList:
-            for meal in self.meals:
-                if meal.id == item:
-                    meals.append(meal)
-        return meals
+    def get_meal(self, meal_id):
+        for meal in self.meals:
+            if meal['id'] == meal_id:
+                return meal
         
 
-    def post(self):
-        pass
+    def add(self, meal):
+        self.meals.append(meal)
