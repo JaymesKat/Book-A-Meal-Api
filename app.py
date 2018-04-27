@@ -1,13 +1,11 @@
 import datetime
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, make_response
 from flask_restful import Resource, Api
 from api.resources.users import User
 from api.resources.menu import Menu
 from api.resources.orders import Order
 from api.resources.meals import Meal
 # from flask_sqlalchemy import SQLAlchemy
-
-from api import create_app
 
 app =  Flask(__name__)
 
@@ -71,25 +69,29 @@ def get_menu():
 # Setup menu for the day
 @app.route('/api/v1/menu/', methods=['POST'])
 def set_menu():
-    return jsonify({'menu': Menu.get_meals_on_menu(Menu)})
+    return make_response(jsonify({'menu': Menu.get_meals_on_menu(Menu)}), 201)
 
-# Get all orders
-@app.route('/api/v1/orders/', methods=['GET'])
-def get_orders():
-    return jsonify({'orders': Order.orders})
-
-# Select meal option from the menu
+# Add a meal option from the menu
 @app.route('/api/v1/orders', methods=['POST'])
 def add_order():
     if not request.json or not 'meals' in request.json:
         abort(400)
+
     meal = {
         'id': Order.orders[-1]['id'] + 1,
         'meals': request.json['meals'],
         'date_submitted': datetime.date.today().strftime("%Y-%m-%d")
     }
     Meal.add(meal)
-    return jsonify({'meal': meal}), 201
+    return jsonify({'meal': meal})
+
+# Get all orders
+@app.route('/api/v1/orders/', methods=['GET'])
+def get_orders():
+     response  = jsonify({'orders': Order.orders})
+     response.status_code = 200
+
+     return response
 
 # Modify an order
 @app.route('/api/v1/orders/<orderId>', methods=['PUT'])
@@ -107,14 +109,12 @@ def update_order(order_id):
 
 # Delete an order
 @app.route('/api/v1/orders/<order_id>', methods=['DELETE'])
-def delet_order(order_id):
+def delete_order(order_id):
     order = [order for order in Order.orders if order['id'] == order]
     if len(order) == 0:
         abort(404)
     Order.orders.remove(order[0])
     return jsonify({'result': True})
-
-   
 
 if __name__ == '__main__':
     app.run(debug=True)
