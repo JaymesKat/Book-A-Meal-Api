@@ -1,13 +1,12 @@
 from flask import  jsonify, request, abort
 from flask_restful import Resource
-from api.resources.meals import Meal
+from api.resources.v1.meals import Meal
 
 class Menu(Resource):
 
     menu =  {
             'meal_ids': [4,1,3,2]
         }
-
 
     # CRUD operations
 

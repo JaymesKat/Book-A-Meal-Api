@@ -1,7 +1,6 @@
 
 import unittest
-from app import app
-from api.resources.menu import Menu
+from api.app import app
 
 """This class contains unit tests for the menu apis and functions"""
 class MenuTestCase(unittest.TestCase):
