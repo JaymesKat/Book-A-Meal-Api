@@ -1,4 +1,5 @@
 venv/
 key.txt
 *.pyc
-.pytest_cache
+*.pytest_cache
+*__pycache__/
