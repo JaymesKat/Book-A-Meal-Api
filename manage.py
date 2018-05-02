@@ -1,18 +1,21 @@
 import unittest
 from flask_script import Manager
+from api.app import app
 
-#setup manager object
 manager = Manager(app)
 
-#Add command to run all tests
+''' Define command to run all tests '''
+
+
 @manager.command
 def test():
     # Run unit tests
     tests = unittest.TestLoader().discover('./tests', pattern='test*.py')
-    result = unittest.TextTestRunner.run(tests)
+    result = unittest.TextTestRunner(verbosity=1).run(tests)
     if result.wasSuccessful():
         return 0
     return 1
+
 
 if __name__ == "__main__":
     manager.run()
