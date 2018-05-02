@@ -6,25 +6,25 @@ orders = [
          {
             'id': 1,
             'meal_id': 1,
-            'date_submitted' : u'2018-04-24',
+            'date_submitted' : '2018-04-24',
             'user_id' : 1
         },
         {
             'id': 2,
             'meal_id': 2,
-            'date_submitted' : u'2018-04-24',
+            'date_submitted' : '2018-04-24',
             'user_id' : 2
         },
         {
             'id': 3,
             'meal_id': 3,
-            'date_submitted' : u'2018-04-25',
+            'date_submitted' : '2018-04-25',
             'user_id' : 2
         },
         {
             'id': 4,
             'meal_id': 4,
-            'date_submitted' : u'2018-04-25',
+            'date_submitted' : '2018-04-25',
             'user_id' : 1
         }
     ]

@@ -5,22 +5,22 @@ import json
 meals = [
     {
         'id': 1,
-        'name': u'Rice & Chicken',
+        'name': 'Rice & Chicken',
         'price': 10.5
     },
     {
         'id': 2,
-        'name': u'Fries & Beef',
+        'name': 'Fries & Beef',
         'price': 13.5
     },
     {
         'id': 3,
-        'name': u'Fries & Chicken',
+        'name': 'Fries & Chicken',
         'price': 17
     },
     {
         'id': 4,
-        'name': u'Potatoes & Beans',
+        'name': 'Potatoes & Beans',
         'price': 15
     }
 ]

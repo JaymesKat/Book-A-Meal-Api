@@ -2,8 +2,8 @@ import unittest
 import json
 from api.app import app
 
-class AuthTestCase(unittest.TestCase):   
-    ''' Tests for user authentication '''
+class LoginTestCase(unittest.TestCase):   
+    ''' Tests for user login authentication '''
     def setUp(self):
         self.app = app
         self.app.testing = True
@@ -16,6 +16,11 @@ class AuthTestCase(unittest.TestCase):
 
         res = self.client().post('/bookameal/api/v1/auth/register', data=test_data)
         self.assertEqual(res.status_code, 201)
+
+    '''Test if a user registered with missing credentials'''
+    def test_user_registered_missing_credentials(self):
+        test_data = json.dumps({'username': '','email': '', 'password': ''}) 
+        res = self.client().post('/bookameal/api/v1/auth/register', data=test_data) 
 
     ''' Test if user is already registered'''
     def test_user_already_registered(self):

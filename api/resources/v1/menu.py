@@ -15,7 +15,7 @@ class Menu(Resource):
         meals = []
         for id in self.menu['meal_ids']:
             meals.append(Meal.get(Meal,id))
-        return jsonify({'menu': self.menu})
+        return jsonify({'menu': meals})
 
     # Create menu for the day
     def post(self):

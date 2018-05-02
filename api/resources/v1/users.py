@@ -5,56 +5,60 @@ class User():
     users = [
         {
             'id': 1,
-            'user_name': u'james_katarikawe',
-            'email': u'jpkatarikawe@gmail.com',
-            'password': u'james', 
+            'user_name': 'james_katarikawe',
+            'email': 'jpkatarikawe@gmail.com',
+            'password': 'james', 
             'is_caterer': False,
-            'orders_sent' : []
+            'isloggedin': False
         },
         {
             'id': 2,
-            'user_name': u'paul_kayongo',
-            'email': u'paulkayongo@gmail.com',
-            'password': u'kayongo', 
+            'user_name': 'paul_kayongo',
+            'email': 'paulkayongo@gmail.com',
+            'password': 'kayongo', 
             'is_caterer': False,
-            'orders_sent' : []
+            'isloggedin': False
         },
         {
             'id': 3,
-            'user_name': u'joseph_odur',
-            'email': u'odur@gmail.com',
-            'password': u'odur', 
+            'user_name': 'joseph_odur',
+            'email': 'odur@gmail.com',
+            'password': 'odur', 
             'is_caterer': True,
-            'orders_received' : []
+            'isloggedin': False
         },
         {
-            'email': u'seryazi@gmail.com',
-            'user_name': u'phillip_seryazi',
-            
-            'password': u'seryazi', 
+            'id': 4,
+            'email': 'seryazi@gmail.com',
+            'user_name': 'phillip_seryazi',            
+            'password': 'seryazi', 
             'is_caterer': True,
-            'orders_received' : []
+            'isloggedin': False
         }
     ]
 
-    def save(self,user):
-        # Adds user to collection of users
-        self.users.append(user)
+    @classmethod
+    def register(cls, first_name, last_name, user_name, email, password):
+        user = {'id': cls.users[-1]['id'] + 1,'user_name': user_name, 'email': email, 'password': password, 'is_caterer': False}
+        cls.users.append(user)
 
-    def username_matches(self, username):
+    @classmethod
+    def username_matches(cls, username):
         # check if username is present
-        if any(user['username'] == username for user in self.users):
+        if any(user['user_name'] == username for user in cls.users):
             return True
         return False
 
-    def email_matches(self, email):
+    @classmethod
+    def email_matches(cls, email):
         # check if email is present
-        if any(user['email'] == email for user in self.users):
+        if any(user['email'] == email for user in cls.users):
             return True
         return False
 
-    def password_matches(self, password):
+    @classmethod
+    def password_matches(cls, password):
         # check if password is correct
-        if any(user['password'] == password for user in self.users):
+        if any(user['password'] == password for user in cls.users):
             return True
         return False

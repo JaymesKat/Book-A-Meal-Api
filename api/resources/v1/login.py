@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from api.resources.v1.users import User
 
-class Authentication(Resource):
+class Login(Resource):
  
     def register():
         request.get_json(force=True)
