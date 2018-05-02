@@ -35,10 +35,10 @@ class AuthTestCase(unittest.TestCase):
             'email': 'james@example.com',
             'password': '@password'
             })
-        res = self.client().post('/bookameal/api/v1/', data=test_data)
-        res = self.client().post('/bookameal/api/v1/', data=test_data)
+        res = self.client().post('/bookameal/api/v1/auth/register/', data=test_data)
+        res = self.client().post('/bookameal/api/v1/auth/register/', data=test_data)
         self.assertEqual(res.status_code, 409)
-        second_res = self.client().post('/bookameal/api/v1/auth/register', data=self.user)
+        second_res = self.client().post('/bookameal/api/v1/auth/register', data=test_data)
 
         # Status code returned should be 201 indicating that data received by server 
         # is correct but is server has not processed it since it is duplicate

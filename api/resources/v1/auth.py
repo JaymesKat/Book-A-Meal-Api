@@ -4,14 +4,14 @@ from api.resources.v1.users import User
 class Authentication(Resource):
  
     def register():
-        
+        request.get_json(force=True)
         # Store posted user data in variables
         username = request.json['username']
         email = request.json['email']
         password = request.json['password']
 
-        if not name or not email or not password:
-            response = jsonify({'error': 'Missing fields'})
+        if not username or not email or not password:
+            response = jsonify({'Error': 'Missing fields'})
             response.status_code = 400
             return response
 
@@ -40,18 +40,19 @@ class Authentication(Resource):
             return response
           
     def login():
+        request.json(force=True)
         email = request.json['email']
         password = request.json['password']
 
-        if not username and not password:
-            response = jsonify({'error': 'Email or/and password field cannot be blank'})
+        if not email and not password:
+            response = jsonify({'Error': 'Email or password field cannot be blank'})
             response.status_code = 400
             return response
 
-        # Check if user can be found in records
+        # Check if user is found in records
         user_found = User.email_matches(email) and User.password_matches(password)
         if user_found: # User present in database
-            jwt_args = {"user_name": user_name, "exp": datetime.utcnow() + timedelta(minutes=60)}
+            jwt_args = {"email": email, "exp": datetime.utcnow() + timedelta(minutes=10)}
             token = jwt.encode(jwt_args, app.config['SECRET_KEY'], algorithm='HS256')
             response = jsonify({'Message': 'You have logged in', 'Token': token.decode('utf-8')})
             return response

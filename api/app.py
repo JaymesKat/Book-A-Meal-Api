@@ -18,9 +18,9 @@ api.add_resource(Authentication,
     '/bookameal/api/v1/auth/login/')
 
 api.add_resource(OrderList, '/bookameal/api/v1/orders/')
-api.add_resource(Order,'/bookameal/api/v1/orders/<string:orderId>')
+api.add_resource(Order,'/bookameal/api/v1/orders/<int:order_id>')
 
 api.add_resource(MealList,'/bookameal/api/v1/meals/')
-api.add_resource(Meal,'/bookameal/api/v1/meals/<string:mealId>')
+api.add_resource(Meal,'/bookameal/api/v1/meals/<int:meal_id>')
 
 api.add_resource(Menu, '/bookameal/api/v1/menu/')

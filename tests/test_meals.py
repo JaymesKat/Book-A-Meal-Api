@@ -29,20 +29,23 @@ class MealTestCase(unittest.TestCase):
         #Test API can edit an existing order with PUT request
         res = self.client.post('/bookameal/api/v1/meals/',data=json.dumps({"name": "Spaghetti & Meat","price": "15.5"}))
         self.assertEqual(res.status_code, 201)
-        inserted_meal_id = res['id']
-        rs = self.client.put('/bookameal/api/v1/meals/'+inserted_meal_id, data=json.dumps({"name": "Spaghetti & Cheese","price": "13.5"}))
+        response_data = json.loads(res.data.decode())
+        new_id = response_data['Meal']['id']
+        rs = self.client.put('/bookameal/api/v1/meals/'+str(new_id), data=json.dumps({"name": "Spaghetti & Cheese","price": "13.5"}))
         self.assertEqual(rs.status_code, 200)
-        results = self.client.get('/bookameal/api/v1/meals/'+inserted_meal_id)
-        self.assertIn([4], str(results.data))
+        results = self.client.get('/bookameal/api/v1/meals/'+str(new_id))
+        self.assertIn('13.5', str(results.data))
 
     def test_api_delete_meal(self):
         #Test API can delete an existing meal with DELETE request
-        res = self.client.post('/bookameal/api/v1/meals/',data={'name': 'Posho & Meat', 'price': 9.0})
+        res = self.client.post('/bookameal/api/v1/meals/',data=json.dumps({'name': 'Posho & Meat', 'price': '9.0'}))
         self.assertEqual(res.status_code, 201)
-        res = self.client.delete('/bookameal/api/v1/meals/1')
+        response_data = json.loads(res.data.decode())
+        new_id = response_data['Meal']['id']
+        res = self.client.delete('/bookameal/api/v1/meals/'+str(new_id))
         self.assertEqual(res.status_code, 200)
         # Test to see if it exists, should return a 404
-        result = self.client.get('/bookameal/api/v1/meals/1')
+        result = self.client.get('/bookameal/api/v1/meals/'+str(new_id))
         self.assertEqual(result.status_code, 404)
 
 

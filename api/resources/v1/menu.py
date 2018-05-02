@@ -19,8 +19,11 @@ class Menu(Resource):
 
     # Create menu for the day
     def post(self):
-        new_menu = request.json['data']
-        return jsonify({'Menu': new_menu})
+        request.get_json(force=True)
+        self.menu['meal_ids']  =  request.json['meal_ids']
+        response = jsonify({'Menu': self.menu})
+        response.status_code = 201
+        return response
 
     # Update menu for the day
     def put(self):       
