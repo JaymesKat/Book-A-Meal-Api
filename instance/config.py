@@ -1,4 +1,6 @@
+import datetime
 # Multiple Configuration settings for app
+
 
 class MainConfiguration(object):
     DEBUG = False
@@ -6,15 +8,18 @@ class MainConfiguration(object):
     SECRET_KEY = 'IbZM55FJyk'
     JWT_AUTH_URL_RULE = '/bookameal/api/v1/auth/login/'
     JWT_AUTH_USERNAME_KEY = 'email'
+    JWT_EXPIRATION_DELTA = datetime.timedelta(seconds=240)
 
 
 class ProductionEnvironment(MainConfiguration):
     DEBUG = False
     TESTING = False
 
+
 class TestingEnvironment(MainConfiguration):
     DEBUG = True
     TESTING = True
+
 
 class DevelopmentEnvironment(MainConfiguration):
     DEBUG = True
