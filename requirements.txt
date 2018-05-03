@@ -27,7 +27,6 @@ pluggy==0.6.0
 py==1.5.3
 pycodestyle==2.4.0
 pycparser==2.18
-PyJWT==1.6.1
 pylint==1.8.4
 pytest==3.5.1
 pytest-cov==2.5.1

@@ -1,4 +1,5 @@
 from flask import  jsonify, request, abort
+from flask_jwt import JWT, jwt_required
 from flask_restful import Resource
 from api.resources.v1.meals import Meal
 
@@ -9,8 +10,8 @@ class Menu(Resource):
         }
 
     # CRUD operations
-
     # Get menu for the day
+    @jwt_required()
     def get(self):
         meals = []
         for id in self.menu['meal_ids']:
@@ -18,6 +19,7 @@ class Menu(Resource):
         return jsonify({'menu': meals})
 
     # Create menu for the day
+    @jwt_required()    
     def post(self):
         request.get_json(force=True)
         self.menu['meal_ids']  =  request.json['meal_ids']

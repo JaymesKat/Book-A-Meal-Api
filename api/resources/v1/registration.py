@@ -16,7 +16,7 @@ class Registration(Resource):
                 response.status_code = 400
                 return response
             elif not request.json[key]:
-                response = jsonify({'Error': 'No fields should be empty'})
+                response = jsonify({'Error': 'No field should be empty'})
                 response.status_code = 400
                 return response
 
@@ -40,6 +40,6 @@ class Registration(Resource):
             return response
         else:
             User.register(first_name, last_name,user_name,email,password)
-            response = jsonify({'Message': 'The user is successfully registered.'})
+            response = jsonify({'message': 'User {} was created'.format(user_name)})
             response.status_code = 201
             return response

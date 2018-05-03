@@ -3,6 +3,10 @@
 class MainConfiguration(object):
     DEBUG = False
     WTF_CSRF_ENABLED = True
+    SECRET_KEY = 'IbZM55FJyk'
+    JWT_AUTH_URL_RULE = '/bookameal/api/v1/auth/login/'
+    JWT_AUTH_USERNAME_KEY = 'email'
+
 
 class ProductionEnvironment(MainConfiguration):
     DEBUG = False

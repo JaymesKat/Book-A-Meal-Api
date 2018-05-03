@@ -1,5 +1,6 @@
 from flask import  jsonify, request, abort
 from flask_restful import Resource
+from flask_jwt import JWT, jwt_required
 import json
 
 meals = [
