@@ -18,7 +18,7 @@ Run the following commands to have your project setup
 Clone the repository
 
 ```sh
-git clone https://github.com/Jpkat92/Book-A-Meal-Api/tree/develop
+git clone https://github.com/Jpkat92/Book-A-Meal-Api.git
 ```
 
 Change to project directory
@@ -31,8 +31,8 @@ Create and launch the virtual environment
 
 ```sh
 virtualenv venv
-source venv\scripts\activate (Linux/iOS)
-venv\Scripts\activate
+Run 'source venv/bin/activate' on Linux or macOS
+Run 'venv\Scripts\activate' on Windows
 ```
 
 Install dependencies

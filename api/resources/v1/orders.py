@@ -82,7 +82,7 @@ class OrderList(Resource):
     # Authorization for caterer only
     @jwt_required()
     def get(self):
-        response = jsonify({'orders': orders, 'access_token': current_identity})
+        response = jsonify({'orders': orders})
         response.status_code = 200
         return response
 

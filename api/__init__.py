@@ -11,6 +11,7 @@ jwt = JWT(authentication_handler=Login.authenticate, identity_handler=Login.iden
 def auth_response_handler(access_token, identity):
     return jsonify({
             'access_token': access_token.decode('utf-8'),
+            'user_id': identity.id,
             'user_email': identity.email,
             'user_name': identity.first_name+" "+identity.last_name,
             "message": "Successfully logged in"

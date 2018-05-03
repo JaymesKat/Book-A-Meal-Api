@@ -88,6 +88,12 @@ class MealList(Resource):
             'price': float(request.json['price'].strip())
         }
         meals.append(meal)
-        response = jsonify({'Meal': meal})
+        response = jsonify({'Meal': meals, 'Message': 'Meal added successfully'})
         response.status_code = 201
         return response
+    
+    @classmethod
+    def get_meals_by_id(cls, meal_id):
+        meal = [meal_item for meal_item in meals if meal_item['id'] == meal_id]
+        return meal
+

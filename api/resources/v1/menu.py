@@ -1,7 +1,7 @@
 from flask import jsonify, request, abort
 from flask_jwt import JWT, jwt_required
 from flask_restful import Resource
-from api.resources.v1.meals import Meal
+from api.resources.v1.meals import Meal, MealList
 
 ''' This Menu class implements GET and POST methods for a Meal. Authorization for both customer and caterer'''
 
@@ -16,9 +16,11 @@ class Menu(Resource):
     @jwt_required()
     def get(self):
         meals = []
-        for id in self.menu['meal_ids']:
-            meals.append(Meal.get(Meal, id))
-        return jsonify({'menu': meals})
+        for meal_id in self.menu['meal_ids']:
+            meals.append(MealList.get_meals_by_id(meal_id))
+        response = jsonify({'menu': meals})
+        response.status_code = 200
+        return response
 
     # Create menu for the day
     @jwt_required()

@@ -2,14 +2,13 @@ from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 
 class UserObject(object):
-    def __init__(self, id, email,user_name,first_name, last_name, is_caterer, password):
+    def __init__(self, id, email,user_name,first_name, last_name, is_caterer):
         self.id = id
         self.user_name = user_name
         self.first_name = first_name
         self.last_name = last_name
         self.is_caterer = is_caterer
         self.email = email
-        self.password = password
 
 class User():
     users = [
@@ -57,15 +56,26 @@ class User():
         cls.users.append(user)
 
     @classmethod
-    def get_user(cls, email, password):    
+    def get_user(cls, email, password):
         for each_user in cls.users:
             if email == each_user['email'] and password == each_user['password']:
-                user = UserObject(each_user['id'],each_user['email'],each_user['user_name'],each_user['first_name'],each_user['last_name'],each_user['is_caterer'],each_user['password'])
+                user = UserObject(each_user['id'],each_user['email'],each_user['user_name'],each_user['first_name'],each_user['last_name'],each_user['is_caterer'])
                 if user:
                     return user
                 else:
                     return None
-        return None            
+        return None  
+
+    @classmethod
+    def get_user_by_id(cls, user_id): 
+            for each_user in cls.users:
+                if user_id == each_user['id']:
+                    user = each_user
+                    if user:
+                      return user
+                    else:
+                        return None   
+            return None       
 
     @classmethod
     def username_matches(cls, username):

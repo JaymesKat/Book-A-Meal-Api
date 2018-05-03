@@ -15,8 +15,8 @@ class Login(Resource):
 
     @staticmethod
     def identity(payload):
-        user_email = payload['identity']
-        return User.get_user(user_email, None)
+        user_id = payload['identity']
+        return User.get_user_by_id(user_id)
 
            
     @staticmethod   
