@@ -64,6 +64,15 @@ class Meal(Resource):
         meals.remove(meal_to_delete[0])
         return jsonify({'result': True}, 204)
 
+    @staticmethod
+    def is_duplicate(meal_name):
+        meal = [meal_item for meal_item in meals 
+        if meal_item['name'].islower() == meal_name.islower() 
+            and meal_item['name'][1:-1] == meal_name[1:-1]]
+        if meal:
+            return True
+        else:
+            return False
 
 ''' This MealList class implements GET, POST methods for Meals. Authorization for caterer only'''
 class MealList(Resource):
@@ -82,13 +91,19 @@ class MealList(Resource):
         if not request.json or not 'name' in request.json or not 'price' in request.json:
             abort(400)
 
+        meal_name = request.json['name'].strip()
+        if Meal.is_duplicate(meal_name):
+            response = jsonify({'Message':'Duplicate, enter a unique meal name','Status code': '409'})
+            response.status_code = 409
+            return response
+            
         meal = {
             'id': int(meals[-1]['id'] + 1),
-            'name': request.json['name'],
+            'name': request.json['name'].strip(),
             'price': float(request.json['price'].strip())
         }
         meals.append(meal)
-        response = jsonify({'Meal': meals, 'Message': 'Meal added successfully'})
+        response = jsonify({'Meal': meal, 'Message': 'Meal added successfully'})
         response.status_code = 201
         return response
     

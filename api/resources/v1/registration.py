@@ -27,7 +27,10 @@ class Registration(Resource):
         first_name = request.json['first_name'].strip()
         last_name = request.json['last_name'].strip()
 
-
+        if not User.email_is_valid(email):
+            response = jsonify({'Error': 'This email is invalid. Please check again and resend'})
+            response.status_code = 400
+            return response
 
         if User.email_matches(email):
             response = jsonify({'Error': 'This email is already registered.'})

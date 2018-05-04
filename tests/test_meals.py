@@ -16,41 +16,86 @@ class MealTestCase(unittest.TestCase):
             "price": "10.5"
         })
 
-    ''' Test API can create a meal option '''
-    def test_api_create_meal(self):
-        res = self.client.post('/bookameal/api/v1/meals/', data=self.meal)
-        self.assertEqual(res.status_code, 201)
-        self.assertIn('Posho & Meat', str(res.data))
+        self.caterer = json.dumps({
+            "email": "odur@gmail.com",
+            "password": "odur"
+        })
 
-    ''' Test API can get a meal with GET request '''
-    def test_api_get_meals(self):
-        res = self.client.get('/bookameal/api/v1/meals/')
+        self.not_caterer = json.dumps({
+            'email': 'paulkayongo@gmail.com',
+            'password': 'kayongo'
+        })
+
+    def test_api_caterer_create_meal(self):
+        ''' Test API can create a meal option for caterer'''
+        res = self.client.post('/bookameal/api/v1/auth/login/', data=self.caterer,content_type='application/json')
+        res_data = json.loads(res.data.decode())
+        self.assertTrue(res_data['message'] == 'Successfully logged in')
+        self.assertTrue(res_data['access_token'])
+        self.assertEqual(res.status_code, 200)
+        second_res = self.client.post('/bookameal/api/v1/meals/', data=json.dumps({"name": "Posho & Peas",
+            "price": "11.5"}),content_type='application/json',headers=dict(Authorization='JWT '+ res_data['access_token']))
+        self.assertEqual(second_res.status_code, 201)
+        self.assertIn('Posho & Peas', str(second_res.data))
+
+    def test_api_caterer_get_meals(self):
+        ''' Test API can get a meal with GET request '''
+        res = self.client.post('/bookameal/api/v1/auth/login/', data=self.caterer,content_type='application/json')
+        res_data = json.loads(res.data.decode())
+        self.assertTrue(res_data['message'] == 'Successfully logged in')
+        self.assertTrue(res_data['access_token'])
+        self.assertEqual(res.status_code, 200)
+        res = self.client.get('/bookameal/api/v1/meals/',content_type='application/json',headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertEqual(res.status_code, 200)
 
     ''' Test API can edit an existing order with PUT request '''
-    def test_api_update_meal(self):    
+    def test_api_caterer_update_meal(self):   
+        res = self.client.post('/bookameal/api/v1/auth/login/', data=self.caterer,content_type='application/json')
+        res_data = json.loads(res.data.decode())
+        self.assertTrue(res_data['message'] == 'Successfully logged in')
+        self.assertTrue(res_data['access_token'])
+        self.assertEqual(res.status_code, 200)
+
         res = self.client.post('/bookameal/api/v1/meals/',
-                               data=json.dumps({"name": "Spaghetti & Meat", "price": "15.5"}))
+                               data=json.dumps({"name": "Spaghetti & Meat", "price": "15.5"}),
+                               content_type='application/json',
+                               headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertEqual(res.status_code, 201)
         response_data = json.loads(res.data.decode())
         new_id = response_data['Meal']['id']
         rs = self.client.put('/bookameal/api/v1/meals/'+str(new_id),
-                             data=json.dumps({"name": "Spaghetti & Cheese", "price": "13.5"}))
+                             data=json.dumps({"name": "Spaghetti & Cheese", "price": "13.5"}),
+                             content_type='application/json',
+                             headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertEqual(rs.status_code, 200)
-        results = self.client.get('/bookameal/api/v1/meals/'+str(new_id))
-        self.assertIn('13.5', str(results.data))
+        results = self.client.get('/bookameal/api/v1/meals/'+str(new_id),
+                             content_type='application/json',
+                             headers=dict(Authorization='JWT '+ res_data['access_token']))
+        self.assertIn('Spaghetti & Cheese', str(results.data))
 
     ''' Test API can delete an existing meal with DELETE request '''
-    def test_api_delete_meal(self):
+    def test_api_caterer_delete_meal(self):
+        res = self.client.post('/bookameal/api/v1/auth/login/', data=self.caterer,content_type='application/json')
+        res_data = json.loads(res.data.decode())
+        self.assertTrue(res_data['message'] == 'Successfully logged in')
+        self.assertTrue(res_data['access_token'])
+        self.assertEqual(res.status_code, 200)
+
         res = self.client.post('/bookameal/api/v1/meals/',
-                               data=json.dumps({'name': 'Posho & Meat', 'price': '9.0'}))
+                             data=json.dumps({'name': 'Posho & Meat', 'price': '9.0'}),
+                             content_type='application/json',
+                             headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertEqual(res.status_code, 201)
         response_data = json.loads(res.data.decode())
         new_id = response_data['Meal']['id']
-        res = self.client.delete('/bookameal/api/v1/meals/'+str(new_id))
+        res = self.client.delete('/bookameal/api/v1/meals/'+str(new_id),
+                             content_type='application/json',
+                             headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertEqual(res.status_code, 200)
         # Test to see if it exists, should return a 404
-        result = self.client.get('/bookameal/api/v1/meals/'+str(new_id))
+        result = self.client.get('/bookameal/api/v1/meals/'+str(new_id),
+                             content_type='application/json',
+                             headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertEqual(result.status_code, 404)
 
 

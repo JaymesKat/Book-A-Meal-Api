@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
+from validate_email import validate_email
 
 class UserObject(object):
     def __init__(self, id, email,user_name,first_name, last_name, is_caterer):
@@ -70,11 +71,7 @@ class User():
     def get_user_by_id(cls, user_id): 
             for each_user in cls.users:
                 if user_id == each_user['id']:
-                    user = each_user
-                    if user:
-                      return user
-                    else:
-                        return None   
+                    return each_user   
             return None       
 
     @classmethod
@@ -97,3 +94,8 @@ class User():
         if any(user['password'] == password for user in cls.users):
             return True
         return False
+
+    @staticmethod
+    def email_is_valid(email):
+        is_valid = validate_email(email)
+        return is_valid

@@ -48,15 +48,4 @@ class LoginTestCase(unittest.TestCase):
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 401)
 
-    # ''' Test if user is already logged in'''
-    # def test_user_already_logged_in(self):
-    #     test_data = json.dumps(
-    #         {'email': 'james@example.com', 'password': '@password'})
-    #     res = self.client().post('/bookameal/api/v1/auth/login/', data=test_data)
-    #     res = self.client().post('/bookameal/api/v1/auth/login/', data=test_data)
-    #     self.assertEqual(res.status_code, 409)
-    #     second_res = self.client().post('/bookameal/api/v1/auth/login', data=test_data)
-    #     self.assertEqual(second_res.status_code, 202)
-    #     result = json.loads(second_res.data.decode())
-    #     self.assertEqual(
-    #         result['message'], "User already logged in")
+    

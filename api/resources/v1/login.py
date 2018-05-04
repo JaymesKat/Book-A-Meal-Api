@@ -9,7 +9,6 @@ class Login(Resource):
 
     @staticmethod
     def authenticate(email, password):
-        # Check if user is found in records
         user = User.get_user(email, password)
         return user
 
@@ -17,15 +16,3 @@ class Login(Resource):
     def identity(payload):
         user_id = payload['identity']
         return User.get_user_by_id(user_id)
-
-           
-    @staticmethod   
-    @jwt_required
-    def post():
-        response = jsonify({"authorization": current_identity})
-        response.status_code = 200
-        return response
-
-    @staticmethod
-    def log_out():
-        pass    
