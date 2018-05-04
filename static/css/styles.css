@@ -1,0 +1,267 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(155deg, #3bc1ed, #165f78, #003040);
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+    margin: 0px;
+    padding: 0px;
+  }
+
+.wrapper {
+    /* width: 100%; */
+    min-height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding:40px;
+}
+
+#nav ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #f1f1f1;
+}
+
+#nav > ul > li {
+    display: inline;
+}
+
+#nav > ul > li  a {
+    display: block;
+    color: #666;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    float: right;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+#nav > ul > li a:hover:not(.active) {
+    background-color: #ccc;
+}
+
+#nav > ul > li a.active {
+    background-color: #ccc;
+}
+#nav .icon {
+    display: none;
+  }
+
+.content {
+    width: 40%;
+    height: auto;
+    position: relative;
+}
+
+.formBox{
+    background: white;
+    width: 100%;
+    padding: 15px 0px;
+    padding-top: 0px;
+    border-radius: 5px;
+    box-shadow: 0 3px 10px #1a1a1a;
+}
+
+.formContent{
+    display: none;
+    padding: 10px 25px;
+}
+
+hr {
+    border: 1px solid #f1f1f1;
+    margin-bottom: 25px;
+}
+
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+    background-color: inherit;    
+    color: #666;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    width: 50%;
+    font-size: 17px;
+    margin: 0px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background-color: #ccc;
+    font-weight: bold;
+}
+
+
+/* Set a style for all buttons */
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+}
+
+button:hover {
+    opacity:1;
+}
+
+/* Extra styles for the cancel button */
+.cancelbtn {
+    padding: 14px 20px;
+    background-color: #f44336;
+}
+
+/* Float cancel and signup buttons and add an equal width */
+.cancelbtn, .signupbtn {
+  float: left;
+  width: 50%;
+}
+
+/* Add padding to container elements */
+.container {
+    padding: 8px;
+}
+
+.container > h1{
+    margin: 0px;
+}
+
+input[type=text],input[type=email], input[type=password] {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    display: inline-block;
+    border: none;
+    background: #f1f1f1;
+}
+
+input[type=text]:focus, input[type=email], input[type=password]:focus {
+    background-color: #ddd;
+    outline: none;
+}
+
+.mainContent{
+    background: white;
+    width: calc(100% - 20px);
+    padding: 15px 0px;
+    border-radius: 10px;
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.mainContent > div {
+    margin: 5px 10px;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+
+.mainContent > div > .header {
+    background-color:  #003040;
+    padding: 30px 40px;
+    color: white;
+    text-align: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+
+   .mainContent > div > .header:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+  
+  .mainContent > div > .header input[type="text"] {
+    border: none;
+    width: 65%;
+    margin: 0px;
+    padding: 10px;
+    float: left;
+    font-size: 16px;
+  }
+
+  .mainContent > div .addBtn {
+    padding: 10px;
+    width: 25%;
+    background: #d9d9d9;
+    color: #555;
+    float: left;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .mainContent > div > .addBtn{
+    color: #fff;
+}
+
+  .mainContent > div .addBtn:hover {
+    background-color: #bbb;
+  }
+
+  .mainContent > div > ul {
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Style the list items */
+  .mainContent > div > ul li {
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    padding: 12px 8px 12px 10px;
+    list-style-type: none;
+    background: #eee;
+    font-size: 18px;
+  }
+
+  .mainContent > div > ul li input[type="checkbox"]{
+      float:left;
+  }
+
+  .mainContent > div > ul li .close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 12px 16px 12px 16px;
+  }
+  
+  .mainContent > div > ul li .close:hover {
+    background-color: #003040;
+    color: white;
+  }
+
+  .mainContent > div > ul li:nth-child(odd) {
+    background: #f9f9f9;
+  }
+
+/* Change styles for cancel button and signup button on extra small screens */
+@media screen and (max-width: 300px) {
+    .cancelbtn, .signupbtn, .signinbtn {
+       width: 100%;
+    }
+}

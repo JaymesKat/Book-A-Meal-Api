@@ -1,0 +1,70 @@
+<!DOCTYPE HTML5>
+<html lang='en'>
+<head>
+	<meta name = "viewport" content = "width = device-width, initial-scale = 1.0"> 
+        <title>Admin Dashboard </title>
+        <link rel="stylesheet" href="css/styles.css"/> 
+        <script src="js/index.js"></script>     
+    </head>
+    <body>
+        <!-- Navigation Menu -->
+        <div id="nav">
+            <ul>
+                <li style="float:left;"><a href="index.html"><b>Book-A-Meal</b></a></li>
+                <li><a style="color:#3bc1ed;pointer-events:none;"><small>Welcome: Admin</small></a></li>
+                <li><a href="caterer_order_history.html">Order History</a></li>
+                <li><a class="active" href="">Home</a></li>
+            </ul>
+        </div>
+        <div class="wrapper">
+            <div class="mainContent">
+                <div id="meal_options">
+                    <div class="header">
+                        <h2 style="margin:5px">Meal Options</h2>   
+                        <input type="text" placeholder="Add a meal option">
+                        <span class="addBtn">Add</span>                         
+                    </div>
+                        
+                    <ul id="menuList">
+                    <li><input type="checkbox" name="option1" value="">Rice and Chicken<span class="close">×</span></li>
+                    <li><input type="checkbox" name="option2" value="">Rice and Fish<span class="close">×</span></li>
+                    <li><input type="checkbox" name="option3" value="">Posho and Beans<span class="close">×</span></li>
+                    <li><input type="checkbox" name="option4" value="">Chips Masala<span class="close">×</span></li>
+                    <li><input type="checkbox" name="option5" value="">Potatoes and Meat<span class="close">×</span></li>
+                    <li><input type="checkbox" name="option6" value="">Fries and Beef<span class="close">×</span></li>
+                    </ul>
+                    <span class="addBtn" style="margin: 5px;width: auto;background: #666;border-radius:10px; font-size: 14px;">Edit</span>                      
+                    <span class="addBtn" style="margin: 5px;width: auto;background: #3bc1ed;border-radius:10px; font-size: 14px;">Add To Menu</span>                     
+                </div>
+                <div id="daily_menu">
+                    <div class="header">
+                        <h2 style="margin:5px">Daily Menu</h2>                 
+                    </div>
+                        
+                    <ul id="menuList">
+                    <li><input type="checkbox" name="option1" value="">Rice and Chicken<span class="close">×</span></li>
+                    <li><input type="checkbox" name="option2" value="">Rice and Fish<span class="close">×</span></li>
+                    
+                    <li><input type="checkbox" name="option6" value="">Fries and Beef<span class="close">×</span></li>
+                    </ul>                     
+                    <span class="addBtn" style="margin: 5px;width: auto;background: #4CAF50;border-radius:10px; font-size: 14px;">Post menu</span>                     
+                </div>
+                <div id="orders">
+                    <div class="header">
+                        <h2 style="margin:5px">Today's Orders</h2>                     
+                    </div>
+                        
+                    <ul id="menuList">
+                    <li><input type="checkbox" name="option1" value="">Rice and Chicken<span class="close">×</span></li>
+                    <li><input type="checkbox" name="option2" value="">Rice and Fish<span class="close">×</span></li>
+                    <li><input type="checkbox" name="option3" value="">Posho and Beans<span class="close">×</span></li>
+                    <li><input type="checkbox" name="option4" value="">Chips Masala<span class="close">×</span></li>
+                    <li><input type="checkbox" name="option5" value="">Potatoes and Meat<span class="close">×</span></li>
+                    <li><input type="checkbox" name="option6" value="">Fries and Beef<span class="close">×</span></li>
+                    </ul>  <span class="addBtn" style="margin: 5px;width: auto;background: #f44336;border-radius:10px; font-size: 14px;">Delete</span>   
+                    <span class="addBtn" style="margin: 5px;width: auto;background: #4CAF50;border-radius:10px; font-size: 14px;">Mark as Complete</span>                     
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
