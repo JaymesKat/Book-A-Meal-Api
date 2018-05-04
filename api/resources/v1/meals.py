@@ -28,8 +28,30 @@ meals = [
 
 ''' This Meal class implements GET, PUT, DELETE methods for a Meal. Authorization for caterer only'''
 class Meal(Resource):
-
-    # CRUD operations
+    "This resource is for retrieving a meal resource"
+    # @swagger.operation(
+    #     notes='A meal resource returns a meal id, name and price',
+    #     nickname='',
+    #     parameters=[
+    #         {
+    #           "name": "body",
+    #           "description": "blueprint object that needs to be added. YAML.",
+    #           "required": True,
+    #           "allowMultiple": False,
+    #           "paramType": "body"
+    #         }
+    #       ],
+    #     responseMessages=[
+    #         {
+    #           "code": 201,
+    #           "message": "Created. The URL of the created blueprint should be in the Location header"
+    #         },
+    #         {
+    #           "code": 405,
+    #           "message": "Invalid input"
+    #         }
+    #       ]
+    #     )
 
     # Get a single meal option by id
     @jwt_required()
