@@ -9,6 +9,8 @@ class LoginTestCase(unittest.TestCase):
         self.app.testing = True
         self.client = self.app.test_client
 
+        
+
     '''Test if user logged in successfully'''
     def test_registered_user_log_in(self):
         test_data = {"first_name": "Joshua", "last_name": "Mugisha", "user_name": "jmugisha", "email": "joshua@example.com", "password": "@password"}

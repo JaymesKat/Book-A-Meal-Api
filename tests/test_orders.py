@@ -15,39 +15,90 @@ class OrderTestCase(unittest.TestCase):
             'meal_id': 5
         })
 
+        self.customer = json.dumps({
+            'email': 'paulkayongo@gmail.com',
+            'password': 'kayongo'
+        })
+
+        self.not_customer = json.dumps({
+            "email": "odur@gmail.com",
+            "password": "odur"
+        })
+
     def test_api_create_order(self):
         # Test API can create an order
-        res = self.client.post('/bookameal/api/v1/orders/', data=self.order)
+        
+        res = self.client.post('/bookameal/api/v1/auth/login/', data=self.customer,content_type='application/json')
+        res_data = json.loads(res.data.decode())
+        self.assertTrue(res_data['message'] == 'Successfully logged in')
+        self.assertTrue(res_data['access_token'])
+
+        self.assertEqual(res.status_code, 200)
+        res = self.client.post('/bookameal/api/v1/orders/', data=self.order,
+        content_type='application/json',
+        headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertEqual(res.status_code, 201)
         today = datetime.date.today().strftime("%Y-%m-%d")
         self.assertIn(today, str(res.data))
 
     def test_api_get_orders(self):
         #Test API can get an order with GET request
-        res = self.client.get('/bookameal/api/v1/orders/')
+
+        res = self.client.post('/bookameal/api/v1/auth/login/', data=self.customer,content_type='application/json')
+        res_data = json.loads(res.data.decode())
+        self.assertTrue(res_data['message'] == 'Successfully logged in')
+        self.assertTrue(res_data['access_token'])
+
+        res = self.client.get('/bookameal/api/v1/orders/',
+        content_type='application/json',
+        headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertEqual(res.status_code, 200)
 
     def test_api_update_order(self):
         #Test API can edit an existing order with PUT request
-        res = self.client.post('/bookameal/api/v1/orders/',data=json.dumps({'meal_id':7, 'user_id': 8}))
+
+        res = self.client.post('/bookameal/api/v1/auth/login/', data=self.customer,content_type='application/json')
+        res_data = json.loads(res.data.decode())
+        self.assertTrue(res_data['message'] == 'Successfully logged in')
+        self.assertTrue(res_data['access_token'])
+
+        res = self.client.post('/bookameal/api/v1/orders/',data=json.dumps({'meal_id':7, 'user_id': 8}),
+        content_type='application/json',
+        headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertEqual(res.status_code, 201)
         data = json.loads(res.data.decode())
         new_order_id = data['order']['id']
-        rs = self.client.put('/bookameal/api/v1/orders/'+str(new_order_id), data=json.dumps({'meal_id':5, 'user_id': 1}))
+        rs = self.client.put('/bookameal/api/v1/orders/'+str(new_order_id), 
+        data=json.dumps({'meal_id':5, 'user_id': 1}),
+        content_type='application/json',
+        headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertEqual(rs.status_code, 200)
-        results = self.client.get('/bookameal/api/v1/orders/'+str(new_order_id))
+        results = self.client.get('/bookameal/api/v1/orders/'+str(new_order_id),
+        content_type='application/json',
+        headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertIn('5', str(results.data))
 
     def test_api_delete_order(self):
         #Test API can delete an existing order with DELETE request
-        res = self.client.post('/bookameal/api/v1/orders/',data=json.dumps({'meal_id':5, 'user_id': 1}))
+        res = self.client.post('/bookameal/api/v1/auth/login/', data=self.customer,content_type='application/json')
+        res_data = json.loads(res.data.decode())
+        self.assertTrue(res_data['message'] == 'Successfully logged in')
+        self.assertTrue(res_data['access_token'])
+
+        res = self.client.post('/bookameal/api/v1/orders/',data=json.dumps({'meal_id':5, 'user_id': 1}),
+        content_type='application/json',
+        headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertEqual(res.status_code, 201)
         response_data = json.loads(res.data.decode())
         new_id = response_data['order']['id']
-        res = self.client.delete('/bookameal/api/v1/orders/'+str(new_id))
+        res = self.client.delete('/bookameal/api/v1/orders/'+str(new_id),
+        content_type='application/json',
+        headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertEqual(res.status_code, 204)
         # Test to see if it exists, should return a 404
-        result = self.client.get('/bookameal/api/v1/orders/'+str(new_id))
+        result = self.client.get('/bookameal/api/v1/orders/'+str(new_id),
+        content_type='application/json',
+        headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertEqual(result.status_code, 404)
 
 if __name__ == "__main__":
