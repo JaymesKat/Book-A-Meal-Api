@@ -19,6 +19,25 @@ Administrators/Caterers can;
 * Setup daily menu
 * View customer orders
 
+### API resources
+
+These are the endpoints available in the Book-A-Meal API
+
+Endpoint | Description| Access Rights
+------------ | ------------- | ------------- 
+POST api/v1/auth/register | Registers a user | All
+POST api/v1/auth/login |Logs a user in | All
+GET /api/v1/meals/ | Lists all meal options | Caterer
+POST /api/v1/meals/ | Creates a meal option | Caterer
+PUT /api/v1/meals/<int:meal_id> | Update a meal option | Caterer
+DELETE /api/v1/meals/<int:meal_id> | Update a meal option | Caterer
+GET /api/v1/menu/ | Gets the daily menu | Customer, Caterer
+POST /api/v1/menu/ | Setup the daily menu from meal options | Caterer
+GET /api/v1/orders/ | List all orders| Caterer
+POST /api/v1/orders/ | Place a new order | Customer
+POST /api/v1/orders/<int:order_id> | Update an order | Customer
+POST /api/v1/orders/<int:order_id> | Delete an order | Customer, Caterer
+
 ## Technologies used
 
 * Python 3
