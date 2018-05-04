@@ -13,8 +13,7 @@ def auth_response_handler(access_token, identity):
             "message": "Successfully logged in",
             'email': identity.email,
             'access_token': access_token.decode('utf-8'),
-            'user_id': identity.id,
-            'user_name': identity.first_name+" "+identity.last_name
+            'user_id': identity.id
         })
 
 def create_app(config_name):

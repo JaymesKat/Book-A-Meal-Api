@@ -3,11 +3,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from validate_email import validate_email
 
 class UserObject(object):
-    def __init__(self, id, email,user_name,first_name, last_name, is_caterer):
+    def __init__(self, id, email, is_caterer):
         self.id = id
-        self.user_name = user_name
-        self.first_name = first_name
-        self.last_name = last_name
         self.is_caterer = is_caterer
         self.email = email
 
@@ -60,7 +57,7 @@ class User():
     def get_user(cls, email, password):
         for each_user in cls.users:
             if email == each_user['email'] and password == each_user['password']:
-                user = UserObject(each_user['id'],each_user['email'],each_user['user_name'],each_user['first_name'],each_user['last_name'],each_user['is_caterer'])
+                user = UserObject(each_user['id'],each_user['email'],each_user['is_caterer'])
                 if user:
                     return user
                 else:

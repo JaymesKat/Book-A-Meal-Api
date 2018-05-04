@@ -4,7 +4,6 @@ from flask import Flask
 from flask_restful import Api
 from api.__init__ import create_app
 from flask_jwt import JWT, jwt_required, current_identity
-from flask_restful_swagger import swagger
 from api.resources.v1.meals import Meal, MealList
 from api.resources.v1.orders import Order, OrderList
 from api.resources.v1.menu import Menu

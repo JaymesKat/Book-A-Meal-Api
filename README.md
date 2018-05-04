@@ -48,10 +48,11 @@ Customers can;
 * View a daily menu of meal options
 * Place an order by selecting meal options
 
-Food Vendors/Caterers can;
+Administrators/Caterers can;
 * Login
-* View customer order details
+* Create, retrieve, update and delete meal options 
 * Setup daily menu
+* View customer orders
 
 
 ## How to  run tests
