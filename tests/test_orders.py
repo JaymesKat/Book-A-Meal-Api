@@ -20,14 +20,15 @@ class OrderTestCase(unittest.TestCase):
             'password': 'kayongo'
         })
 
-        self.not_customer = json.dumps({
+        self.caterer = json.dumps({
             "email": "odur@gmail.com",
             "password": "odur"
         })
 
-    def test_api_create_order(self):
-        # Test API can create an order
+    def test_api_customer_create_order(self):
+        # A customer can create an order
         
+        # Send a post with customer credentials
         res = self.client.post('/bookameal/api/v1/auth/login/', data=self.customer,content_type='application/json')
         res_data = json.loads(res.data.decode())
         self.assertTrue(res_data['message'] == 'Successfully logged in')
@@ -41,7 +42,21 @@ class OrderTestCase(unittest.TestCase):
         today = datetime.date.today().strftime("%Y-%m-%d")
         self.assertIn(today, str(res.data))
 
-    def test_api_get_orders(self):
+    def test_api_caterer_should_not_create_order(self):
+        # A customer can create an order
+        
+        # Send a post with customer credentials
+        res = self.client.post('/bookameal/api/v1/auth/login/', data=self.caterer,content_type='application/json')
+        res_data = json.loads(res.data.decode())
+        self.assertTrue(res_data['message'] == 'Successfully logged in')
+        self.assertTrue(res_data['access_token'])
+        self.assertEqual(res.status_code, 200)
+
+        second_res = self.client.post('/bookameal/api/v1/orders/', data=json.dumps(self.order),content_type='application/json',headers=dict(Authorization='JWT '+ res_data['access_token']))
+        self.assertEqual(second_res.status_code, 401)
+        self.assertIn('An admin(caterer) is not allowed to post an order', str(second_res.data))
+
+    def test_api_customer_should_not_get_orders(self):
         #Test API can get an order with GET request
 
         res = self.client.post('/bookameal/api/v1/auth/login/', data=self.customer,content_type='application/json')
@@ -49,12 +64,12 @@ class OrderTestCase(unittest.TestCase):
         self.assertTrue(res_data['message'] == 'Successfully logged in')
         self.assertTrue(res_data['access_token'])
 
-        res = self.client.get('/bookameal/api/v1/orders/',
-        content_type='application/json',
-        headers=dict(Authorization='JWT '+ res_data['access_token']))
-        self.assertEqual(res.status_code, 200)
+        second_res = self.client.post('/bookameal/api/v1/meals/', data=json.dumps({"name": "Posho & Peas",
+            "price": "11.5"}),content_type='application/json',headers=dict(Authorization='JWT '+ res_data['access_token']))
+        self.assertEqual(second_res.status_code, 401)
+        self.assertIn('You must be an admin to access this resource', str(second_res.data))
 
-    def test_api_update_order(self):
+    def test_api_customer_update_order(self):
         #Test API can edit an existing order with PUT request
 
         res = self.client.post('/bookameal/api/v1/auth/login/', data=self.customer,content_type='application/json')
@@ -78,7 +93,7 @@ class OrderTestCase(unittest.TestCase):
         headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertIn('5', str(results.data))
 
-    def test_api_delete_order(self):
+    def test_api_customer_delete_order(self):
         #Test API can delete an existing order with DELETE request
         res = self.client.post('/bookameal/api/v1/auth/login/', data=self.customer,content_type='application/json')
         res_data = json.loads(res.data.decode())

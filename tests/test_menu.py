@@ -19,12 +19,12 @@ class MenuTestCase(unittest.TestCase):
             "password": "odur"
         })
 
-        self.not_caterer = json.dumps({
+        self.customer = json.dumps({
             'email': 'paulkayongo@gmail.com',
             'password': 'kayongo'
         })
 
-    def test_api_setup_menu(self):
+    def test_api_caterer_can_setup_menu(self):
         # Test API can create a meal option
         res = self.client.post('/bookameal/api/v1/auth/login/', data=self.caterer,content_type='application/json')
         res_data = json.loads(res.data.decode())
@@ -35,6 +35,20 @@ class MenuTestCase(unittest.TestCase):
         headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertEqual(res.status_code, 201)
         self.assertIn('4', str(res.data))
+
+    def test_api_customer_should_not_setup_menu(self):
+        # Test API can create a meal option
+        res = self.client.post('/bookameal/api/v1/auth/login/', data=self.customer,content_type='application/json')
+        res_data = json.loads(res.data.decode())
+        self.assertTrue(res_data['message'] == 'Successfully logged in')
+        self.assertTrue(res_data['access_token'])
+        res = self.client.post('/bookameal/api/v1/menu/', data=self.menu_list,
+        content_type='application/json',
+        headers=dict(Authorization='JWT '+ res_data['access_token']))
+        second_res = self.client.post('/bookameal/api/v1/meals/', data=json.dumps({"name": "Posho & Peas",
+            "price": "11.5"}),content_type='application/json',headers=dict(Authorization='JWT '+ res_data['access_token']))
+        self.assertEqual(second_res.status_code, 401)
+        self.assertIn('You must be an admin to access this resource', str(second_res.data))
 
     def test_api_get_menu(self):
         #Test API can get menu with GET request

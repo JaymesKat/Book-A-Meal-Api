@@ -2,6 +2,7 @@ import datetime
 from flask import jsonify, request, abort
 from flask_restful import Resource
 from flask_jwt import JWT, jwt_required, current_identity
+from api.resources.v1.login import Login
 
 orders = [
          {
@@ -53,6 +54,11 @@ class Order(Resource):
     # Authorization for customer only
     @jwt_required()
     def put(self, order_id):
+        if current_identity['is_caterer'] == True:
+            response = jsonify({'message':'An admin(caterer) is not allowed to update an order'})
+            response.status_code = 401
+            return response
+
         request.get_json(force=True)
 
         order_to_update = [order_item for order_item in orders if order_item['id'] == order_id]
@@ -81,14 +87,23 @@ class OrderList(Resource):
     # Get all orders
     # Authorization for caterer only
     @jwt_required()
-    def get(self):
+    def get(self):        
+        if current_identity['is_caterer'] == False:
+            response = jsonify({'message':'You must be an admin to access this resource'})
+            response.status_code = 401
+            return response
         response = jsonify({'orders': orders})
         response.status_code = 200
         return response
 
-     # Create a new order, handles a selected meal option from the menu
+     # Create a new order, handles a selected meal option from the menu, customer role
     @jwt_required()
     def post(self):
+        if current_identity['is_caterer'] == True:
+            response = jsonify({'message':'An admin(caterer) is not allowed to post an order'})
+            response.status_code = 401
+            return response
+
         request.get_json(force=True)
         if not request.json:
             abort(400)

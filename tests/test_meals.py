@@ -21,13 +21,13 @@ class MealTestCase(unittest.TestCase):
             "password": "odur"
         })
 
-        self.not_caterer = json.dumps({
+        self.customer = json.dumps({
             'email': 'paulkayongo@gmail.com',
             'password': 'kayongo'
         })
 
     def test_api_caterer_create_meal(self):
-        ''' Test API can create a meal option for caterer'''
+        ''' Test API - a caterer can create meal options'''
         res = self.client.post('/bookameal/api/v1/auth/login/', data=self.caterer,content_type='application/json')
         res_data = json.loads(res.data.decode())
         self.assertTrue(res_data['message'] == 'Successfully logged in')
@@ -39,7 +39,8 @@ class MealTestCase(unittest.TestCase):
         self.assertIn('Posho & Peas', str(second_res.data))
 
     def test_api_caterer_get_meals(self):
-        ''' Test API can get a meal with GET request '''
+        ''' Test API - a caterer can get all meals '''
+
         res = self.client.post('/bookameal/api/v1/auth/login/', data=self.caterer,content_type='application/json')
         res_data = json.loads(res.data.decode())
         self.assertTrue(res_data['message'] == 'Successfully logged in')
@@ -48,8 +49,9 @@ class MealTestCase(unittest.TestCase):
         res = self.client.get('/bookameal/api/v1/meals/',content_type='application/json',headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertEqual(res.status_code, 200)
 
-    ''' Test API can edit an existing order with PUT request '''
     def test_api_caterer_update_meal(self):   
+        ''' Test API - a caterer can edit an existing order with PUT request '''
+
         res = self.client.post('/bookameal/api/v1/auth/login/', data=self.caterer,content_type='application/json')
         res_data = json.loads(res.data.decode())
         self.assertTrue(res_data['message'] == 'Successfully logged in')
@@ -73,7 +75,7 @@ class MealTestCase(unittest.TestCase):
                              headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertIn('Spaghetti & Cheese', str(results.data))
 
-    ''' Test API can delete an existing meal with DELETE request '''
+    ''' Test API a caterer can delete an existing meal with DELETE request '''
     def test_api_caterer_delete_meal(self):
         res = self.client.post('/bookameal/api/v1/auth/login/', data=self.caterer,content_type='application/json')
         res_data = json.loads(res.data.decode())
@@ -98,6 +100,28 @@ class MealTestCase(unittest.TestCase):
                              headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertEqual(result.status_code, 404)
 
+    def test_api_customer_should_not_create_meal(self):
+        ''' Test API can create a meal option for non caterer'''
+        res = self.client.post('/bookameal/api/v1/auth/login/', data=self.customer,content_type='application/json')
+        res_data = json.loads(res.data.decode())
+        self.assertTrue(res_data['message'] == 'Successfully logged in')
+        self.assertTrue(res_data['access_token'])
+        self.assertEqual(res.status_code, 200)
+        second_res = self.client.post('/bookameal/api/v1/meals/', data=json.dumps({"name": "Posho & Peas",
+            "price": "11.5"}),content_type='application/json',headers=dict(Authorization='JWT '+ res_data['access_token']))
+        self.assertEqual(second_res.status_code, 401)
+        self.assertIn('You must be an admin to access this resource', str(second_res.data))
+
+    def test_customer_should_not_get_meals(self):
+            ''' Test API - a customer should not be able to get meals'''
+            res = self.client.post('/bookameal/api/v1/auth/login/', data=self.customer,content_type='application/json')
+            res_data = json.loads(res.data.decode())
+            self.assertTrue(res_data['message'] == 'Successfully logged in')
+            self.assertTrue(res_data['access_token'])
+            self.assertEqual(res.status_code, 200)
+            res = self.client.get('/bookameal/api/v1/meals/',content_type='application/json',headers=dict(Authorization='JWT '+ res_data['access_token']))
+            self.assertEqual(res.status_code, 401)
+            self.assertIn('You must be an admin to access this resource', str(res.data))
 
 if __name__ == "__main__":
     unittest.main()

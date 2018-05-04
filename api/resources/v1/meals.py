@@ -1,6 +1,6 @@
 from flask import jsonify, request, abort
 from flask_restful import Resource
-from flask_jwt import JWT, jwt_required
+from flask_jwt import JWT, jwt_required, current_identity
 import json
 
 meals = [
@@ -34,6 +34,11 @@ class Meal(Resource):
     # Get a single meal option by id
     @jwt_required()
     def get(self, meal_id):
+        if current_identity['is_caterer'] == False:
+            response = jsonify({'message':'You must be an admin to access this resource'})
+            response.status_code = 401
+            return response
+
         meal = [meal_item for meal_item in meals if meal_item['id'] == meal_id]
         if not meal:
             abort(404)
@@ -43,6 +48,12 @@ class Meal(Resource):
     # Update the information of a meal option
     @jwt_required()
     def put(self, meal_id):
+
+        if current_identity['is_caterer'] == False:
+            response = jsonify({'message':'You must be an admin to access this resource'})
+            response.status_code = 401
+            return response
+
         request.get_json(force=True)
 
         meal_to_update = [
@@ -57,6 +68,11 @@ class Meal(Resource):
     # Delete a meal option
     @jwt_required()
     def delete(self, meal_id):
+        if current_identity['is_caterer'] == False:
+            response = jsonify({'message':'You must be an admin to access this resource'})
+            response.status_code = 401
+            return response
+
         meal_to_delete = [meal for meal in meals if meal['id'] == meal_id]
         if not meal_to_delete:
             abort(404)
@@ -80,6 +96,10 @@ class MealList(Resource):
     # Get all meal options
     @jwt_required()
     def get(self):
+        if current_identity['is_caterer'] == False:
+            response = jsonify({'message':'You must be an admin to access this resource'})
+            response.status_code = 401
+            return response
         response = jsonify({'meals': meals})
         response.status_code = 200
         return response
@@ -87,6 +107,11 @@ class MealList(Resource):
     # Add a meal option
     @jwt_required()
     def post(self):
+        if current_identity['is_caterer'] == False:
+            response = jsonify({'message':'You must be an admin to access this resource'})
+            response.status_code = 401
+            return response
+
         request.get_json(force=True)
         if not request.json or not 'name' in request.json or not 'price' in request.json:
             abort(400)
