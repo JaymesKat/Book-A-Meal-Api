@@ -2,7 +2,7 @@
 import datetime
 from flask import Flask
 from flask_restful import Api
-from api.__init__ import create_app
+from api.__init__ import app
 from flask_jwt import JWT, jwt_required, current_identity
 from api.resources.v1.meals import Meal, MealList
 from api.resources.v1.orders import Order, OrderList
@@ -11,11 +11,7 @@ from api.resources.v1.users import User
 from api.resources.v1.registration import Registration
 from api.resources.v1.login import Login
 
-app = create_app('development_env')
-api = Api(app)
-# Wrap API with swagger.docs
-# api = swagger.docs(Api(app), apiVersion='0.1')
-
+api = Api(app) 
 
 api.add_resource(Registration,'/api/v1/auth/register/')
 api.add_resource(Login, '/api/v1/auth/login/')

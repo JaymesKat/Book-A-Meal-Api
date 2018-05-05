@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+from flask_restful import Api
 from flask_jwt import JWT, jwt_required
 from instance.config import app_config
 from api.resources.v1.users import User
@@ -22,3 +23,4 @@ def create_app(config_name):
     jwt.init_app(app)
     return app
 
+app = create_app('development_env')
