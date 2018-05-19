@@ -1,28 +1,9 @@
 import json
-import unittest
-from api.app import app
+from tests.test_main import MainTest
 
 """This class contains unit tests for the menu apis and functions"""
-class MenuTestCase(unittest.TestCase):
-    def setUp(self):
-        self.app = app
-        self.app.testing = True
-        self.client = self.app.test_client()
-      
-        self.menu_list = json.dumps({
-            'meal_ids': [4, 2]
-        })
-
-        self.caterer = json.dumps({
-            "email": "odur@gmail.com",
-            "password": "odur"
-        })
-
-        self.customer = json.dumps({
-            'email': 'paulkayongo@gmail.com',
-            'password': 'kayongo'
-        })
-
+class MenuTestCase(MainTest):
+   
     def test_api_caterer_can_setup_menu(self):
         # Test API can create a meal option
         res = self.client.post('/api/v1/auth/login/', data=self.caterer,content_type='application/json')

@@ -1,29 +1,9 @@
 import datetime
-import unittest
 import json
-from api.app import app
+from tests.test_main import MainTest
 
 """This class contains unit tests for the menu apis and functions"""
-class OrderTestCase(unittest.TestCase):
-
-    def setUp(self):
-        self.app = app
-        self.app.testing = True
-        self.client = self.app.test_client()
-        self.order = json.dumps({
-            'user_id': 8,
-            'meal_id': 5
-        })
-
-        self.customer = json.dumps({
-            'email': 'paulkayongo@gmail.com',
-            'password': 'kayongo'
-        })
-
-        self.caterer = json.dumps({
-            "email": "odur@gmail.com",
-            "password": "odur"
-        })
+class OrderTestCase(MainTest):
 
     def test_api_customer_create_order(self):
         # A customer can create an order

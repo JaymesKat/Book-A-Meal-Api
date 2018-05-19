@@ -1,7 +1,8 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, Blueprint
 from flask_restful import Api
 from flask_jwt import JWT, jwt_required
 from instance.config import app_config
+from api.app import setup_routes
 from api.resources.v1.users import User
 from api.resources.v1.login import Login
 
@@ -24,3 +25,8 @@ def create_app(config_name):
     return app
 
 app = create_app('development_env')
+
+api_bp = Blueprint('api', __name__)
+api = Api(api_bp)
+setup_routes(api)
+app.register_blueprint(api_bp)
