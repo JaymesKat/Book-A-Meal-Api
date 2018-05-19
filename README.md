@@ -35,8 +35,8 @@ GET /api/v1/menu/ | Gets the daily menu | Customer, Caterer
 POST /api/v1/menu/ | Setup the daily menu from meal options | Caterer
 GET /api/v1/orders/ | List all orders| Caterer
 POST /api/v1/orders/ | Place a new order | Customer
-+PUT /api/v1/orders/<order_id> | Update an order | Customer
-+DELETE /api/v1/orders/<order_id> | Delete an order | Customer, Caterer
+PUT /api/v1/orders/<order_id> | Update an order | Customer
+DELETE /api/v1/orders/<order_id> | Delete an order | Customer, Caterer
 
 ## Technologies used
 
