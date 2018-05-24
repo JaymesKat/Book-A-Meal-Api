@@ -15,7 +15,8 @@ def auth_response_handler(access_token, identity):
             "message": "Successfully logged in",
             'email': identity.email,
             'access_token': access_token.decode('utf-8'),
-            'user_id': identity.id
+            'user_id': identity.id,
+            'is_admin': identity.is_caterer
         })
 
 def create_app(config_name):
