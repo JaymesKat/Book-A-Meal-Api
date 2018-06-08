@@ -1,5 +1,5 @@
 import datetime
-from app.resources.v1.meals import MealResource, MealListResource
+from app.resources.v1.meals import MealListResource
 
 class Order(object):
     
