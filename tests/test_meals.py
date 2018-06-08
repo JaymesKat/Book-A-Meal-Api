@@ -73,8 +73,8 @@ class MealTestCase(MainTest):
         res = self.client.delete('/api/v1/meals/'+str(new_id),
                              content_type='application/json',
                              headers=dict(Authorization='JWT '+ res_data['access_token']))
-        self.assertEqual(res.status_code, 200)
-        # Test to see if it exists, should return a 404
+        self.assertEqual(res.status_code, 202)
+        # Test to see if it does not exist, should return a 404
         result = self.client.get('/api/v1/meals/'+str(new_id),
                              content_type='application/json',
                              headers=dict(Authorization='JWT '+ res_data['access_token']))
@@ -89,7 +89,7 @@ class MealTestCase(MainTest):
         self.assertEqual(res.status_code, 200)
         second_res = self.client.post('/api/v1/meals/', data=json.dumps({"name": "Posho & Peas",
             "price": "11.5"}),content_type='application/json',headers=dict(Authorization='JWT '+ res_data['access_token']))
-        self.assertEqual(second_res.status_code, 401)
+        self.assertEqual(second_res.status_code, 403)
         self.assertIn('You must be an admin to access this resource', str(second_res.data))
 
     def test_customer_should_not_get_meals(self):
@@ -100,7 +100,7 @@ class MealTestCase(MainTest):
             self.assertTrue(res_data['access_token'])
             self.assertEqual(res.status_code, 200)
             res = self.client.get('/api/v1/meals/',content_type='application/json',headers=dict(Authorization='JWT '+ res_data['access_token']))
-            self.assertEqual(res.status_code, 401)
+            self.assertEqual(res.status_code, 403)
             self.assertIn('You must be an admin to access this resource', str(res.data))
 
 if __name__ == "__main__":

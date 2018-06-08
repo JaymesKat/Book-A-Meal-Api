@@ -1,4 +1,5 @@
 import datetime
+import os
 # Multiple Configuration settings for app
 
 
@@ -9,6 +10,8 @@ class MainConfiguration(object):
     JWT_AUTH_URL_RULE = '/api/v1/auth/login/'
     JWT_AUTH_USERNAME_KEY = 'email'
     JWT_EXPIRATION_DELTA = datetime.timedelta(seconds=3600)
+    BASE_DIR = os.path.abspath(os.path.dirname(__file__))  
+    SQLALCHEMY_DATABASE_URI = ""
 
 
 class ProductionEnvironment(MainConfiguration):

@@ -1,6 +1,6 @@
 import unittest
 import json
-from api.__init__ import app
+from app.__init__ import app
 
 class MainTest(unittest.TestCase):
     def setUp(self):
@@ -19,7 +19,6 @@ class MainTest(unittest.TestCase):
         })
 
         self.order = json.dumps({
-            'user_id': 8,
             'meal_id': 5
         })
 

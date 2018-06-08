@@ -27,7 +27,7 @@ class MenuTestCase(MainTest):
         headers=dict(Authorization='JWT '+ res_data['access_token']))
         second_res = self.client.post('/api/v1/meals/', data=json.dumps({"name": "Posho & Peas",
             "price": "11.5"}),content_type='application/json',headers=dict(Authorization='JWT '+ res_data['access_token']))
-        self.assertEqual(second_res.status_code, 401)
+        self.assertEqual(second_res.status_code, 403)
         self.assertIn('You must be an admin to access this resource', str(second_res.data))
 
     def test_api_get_menu(self):

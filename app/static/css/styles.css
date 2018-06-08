@@ -67,6 +67,11 @@ body {
     box-shadow: 0 3px 10px #1a1a1a;
 }
 
+.formBox > .tab {
+    padding: 20px 10px;
+    font-weight: bold;
+}
+
 .formContent{
     display: none;
     padding: 10px 25px;

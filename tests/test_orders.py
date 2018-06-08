@@ -33,7 +33,7 @@ class OrderTestCase(MainTest):
         self.assertEqual(res.status_code, 200)
 
         second_res = self.client.post('/api/v1/orders/', data=json.dumps(self.order),content_type='application/json',headers=dict(Authorization='JWT '+ res_data['access_token']))
-        self.assertEqual(second_res.status_code, 401)
+        self.assertEqual(second_res.status_code, 403)
         self.assertIn('An admin(caterer) is not allowed to post an order', str(second_res.data))
 
     def test_api_customer_should_not_get_orders(self):
@@ -46,7 +46,7 @@ class OrderTestCase(MainTest):
 
         second_res = self.client.post('/api/v1/meals/', data=json.dumps({"name": "Posho & Peas",
             "price": "11.5"}),content_type='application/json',headers=dict(Authorization='JWT '+ res_data['access_token']))
-        self.assertEqual(second_res.status_code, 401)
+        self.assertEqual(second_res.status_code, 403)
         self.assertIn('You must be an admin to access this resource', str(second_res.data))
 
     def test_api_customer_update_order(self):
@@ -67,14 +67,14 @@ class OrderTestCase(MainTest):
         data=json.dumps({'meal_id':5, 'user_id': 1}),
         content_type='application/json',
         headers=dict(Authorization='JWT '+ res_data['access_token']))
-        self.assertEqual(rs.status_code, 200)
+        self.assertEqual(rs.status_code, 202)
         results = self.client.get('/api/v1/orders/'+str(new_order_id),
         content_type='application/json',
         headers=dict(Authorization='JWT '+ res_data['access_token']))
         self.assertIn('5', str(results.data))
 
     def test_api_customer_delete_order(self):
-        #Test API can delete an existing order with DELETE request
+        '''Test API can delete an existing order with DELETE request'''
         res = self.client.post('/api/v1/auth/login/', data=self.customer,content_type='application/json')
         res_data = json.loads(res.data.decode())
         self.assertTrue(res_data['message'] == 'Successfully logged in')
@@ -89,8 +89,8 @@ class OrderTestCase(MainTest):
         res = self.client.delete('/api/v1/orders/'+str(new_id),
         content_type='application/json',
         headers=dict(Authorization='JWT '+ res_data['access_token']))
-        self.assertEqual(res.status_code, 204)
-        # Test to see if it exists, should return a 404
+        self.assertEqual(res.status_code, 202)
+        '''Test to see if it does not exist, should return a 404'''
         result = self.client.get('/api/v1/orders/'+str(new_id),
         content_type='application/json',
         headers=dict(Authorization='JWT '+ res_data['access_token']))
