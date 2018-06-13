@@ -9,13 +9,12 @@ class Order(object):
         self.date_submitted = datetime.date.today().strftime("%Y-%m-%d")
         self.user_id = user_id
         self.completed = False
-        self.edited = False
 
     def serialize(self):
         return {
             'id': self.id,
             'meal': MealListResource.get_meals_by_id(self.meal_id),
             'date_submitted': self.date_submitted,
-            'user_id': self.user_id,
+            'submitted_by': 'User ID: '+str(self.user_id),
             'completed': self.completed
         }

@@ -1,7 +1,20 @@
 import datetime
 import os
-# Multiple Configuration settings for app
 
+POSTGRES = {
+    'user': 'jameskatarikawe',
+    'pw': '',
+    'db': 'book_a_meal',
+    'host': 'localhost',
+    'port': '5432',
+}
+
+POSTGRES_URL = os.environ["POSTGRES_URL"]
+POSTGRES_USER = os.environ["POSTGRES_USER"]
+POSTGRES_PW = os.environ["POSTGRES_PW"]
+POSTGRES_DB = os.environ["POSTGRES_DB"]
+
+# Multiple Configuration settings for app
 
 class MainConfiguration(object):
     DEBUG = False
@@ -11,7 +24,9 @@ class MainConfiguration(object):
     JWT_AUTH_USERNAME_KEY = 'email'
     JWT_EXPIRATION_DELTA = datetime.timedelta(seconds=3600)
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))  
-    SQLALCHEMY_DATABASE_URI = ""
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://{}:{}@{}/{}'.format(POSTGRES_USER,POSTGRES_PW,POSTGRES_URL,POSTGRES_DB)
+    SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 
 
 class ProductionEnvironment(MainConfiguration):

@@ -1,8 +1,9 @@
 from flask import Flask, jsonify, Blueprint
 from flask_restful import Api
+from flask_sqlalchemy import SQLAlchemy
 from flask_jwt import JWT, jwt_required
 from instance.config import app_config
-from app import setup_routes
+from app import ApiInstance
 from resources.v1.login import LoginResource
 
 jwt = JWT(authentication_handler=LoginResource.authenticate, identity_handler=LoginResource.identity)
@@ -26,7 +27,13 @@ def create_app(config_name):
 
 app = create_app('development_env')
 
+db = SQLAlchemy(app)
+
 api_bp = Blueprint('api', __name__, template_folder='templates')
 api = Api(api_bp)
-setup_routes(api)
+
+#Setup routes
+api_instance = ApiInstance(api)
+api_instance.setup_routes()
+
 app.register_blueprint(api_bp)
