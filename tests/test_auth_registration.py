@@ -1,7 +1,7 @@
 import json
-from tests.test_main import MainTest
+from tests.test_base_case import BaseTest
 
-class RegistrationTestCase(MainTest):   
+class RegistrationTestCase(BaseTest):   
     ''' Tests for user registration '''
 
     def test_user_registered(self):

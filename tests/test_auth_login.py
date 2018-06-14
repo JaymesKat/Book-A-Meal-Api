@@ -1,7 +1,7 @@
 import json
-from tests.test_main import MainTest
+from tests.test_base_case import BaseTest
 
-class LoginTestCase(MainTest):   
+class LoginTestCase(BaseTest):   
     ''' Tests for user login authentication '''      
 
     '''Test if user logged in successfully'''

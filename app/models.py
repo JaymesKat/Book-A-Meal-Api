@@ -5,22 +5,33 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     first_name = db.Column(db.String(30))
     last_name = db.Column(db.String(30))
-    email = db.Column(db.String(30), unique=True, index=True, nullable=False)
+    username = db.Column(db.String(60), unique=True, index=True, nullable=False)
+    email = db.Column(db.String(60), unique=True, index=True, nullable=False)
     is_caterer = db.Column(db.Boolean,default=False)
     password = db.Column(db.String(30), nullable=False)
+    orders = db.relationship('Order', backref='customer')
 
-    def __init__(self, first_name, last_name, email):
+    def __init__(self, first_name, last_name,username, email, is_caterer, password):
         self.first_name = first_name
         self.last_name = last_name
+        self.username = username
         self.email = email
+        self.is_caterer = is_caterer
+        self.password = password
 
     def __repr__(self):
-        return '<First Name: {} and Last Name: {}' .format(self.first_name, self.last_name)
+        return '<Full Name: {} {}' .format(self.first_name, self.last_name)
+
+menu_items = db.Table('menu_items',
+    db.Column('menu_id', db.Integer, db.ForeignKey('menu.id'), primary_key=True),
+    db.Column('meal_id', db.Integer, db.ForeignKey('meal.id'), primary_key=True)
+)
 
 class Meal(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(40))
     price = db.Column(db.Float)
+    orders = db.relationship('Order', backref='meal')
 
     def __repr__(self):
         return '<Meal: %r>' % self.name
@@ -28,32 +39,18 @@ class Meal(db.Model):
 class Menu(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     date_created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    items = db.relationship('Meal', secondary=menu_items, lazy='subquery',
+        backref=db.backref('menus', lazy=True))
 
     def __repr__(self):
         return '<Menu created: %r>' % self.date_created
 
-class MenuItem(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-
-    menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'),nullable=False)
-    menu = db.relationship('Menu', backref=db.backref('menus'))
-
-    meal_id = db.Column(db.Integer, db.ForeignKey('meal.id'),nullable=False)
-    meal = db.relationship('Meal', backref=db.backref('meals'))
-
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     date_submitted = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     completed = db.Column(db.Boolean,default=False)
-
     meal_id = db.Column(db.Integer, db.ForeignKey('meal.id'),nullable=False)
-    meal = db.relationship('Meal', backref=db.backref('meals'))
-
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
-    user = db.relationship('User', backref=db.backref('users'))
 
     def __repr__(self):
         return '<Order: #%r>' % self.id
-    

@@ -1,8 +1,8 @@
 import json
-from tests.test_main import MainTest
+from tests.test_base_case import BaseTest
 
 """This class contains unit tests for the menu apis and functions"""
-class MenuTestCase(MainTest):
+class MenuTestCase(BaseTest):
    
     def test_api_caterer_can_setup_menu(self):
         # Test API can create a meal option

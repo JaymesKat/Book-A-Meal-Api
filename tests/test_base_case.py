@@ -1,11 +1,15 @@
 import unittest
 import json
 from app.__init__ import app
+from app import create_app, db
 
-class MainTest(unittest.TestCase):
+class BaseTest(unittest.TestCase):
     def setUp(self):
         self.app = app
         self.app.testing = True
+        # self.app_context = self.app.app_context()
+        # self.app_context.push()
+        # db.create_all()
         self.client = self.app.test_client()
 
         self.customer = json.dumps({
@@ -31,4 +35,8 @@ class MainTest(unittest.TestCase):
             'meal_ids': [4, 2]
         })
 
-        
+    
+# def tearDown(self): 
+#     db.session.remove() 
+#     db.drop_all() 
+#     self.app_context.pop()
