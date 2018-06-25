@@ -43,4 +43,4 @@ class MenuTestCase(BaseTest):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    super.unittest.main()

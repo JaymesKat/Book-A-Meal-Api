@@ -1,17 +1,25 @@
 import datetime
 import os
+from dotenv import load_dotenv
+
+# load dotenv in the base root
+APP_ROOT = os.path.join(os.path.dirname(__file__), '..')
+dotenv_path = os.path.join(APP_ROOT, '.env')
+load_dotenv(dotenv_path)
+
 
 POSTGRES_URL = os.environ.get("POSTGRES_URL")
 POSTGRES_USER = os.environ.get("POSTGRES_USER")
 POSTGRES_PW = os.environ.get("POSTGRES_PW")
 POSTGRES_DB = os.environ.get("POSTGRES_DB")
+POSTGRES_TEST_DB = os.environ.get("POSTGRES_TEST_DB")
 
 # Multiple Configuration settings for app
 
 class MainConfiguration(object):
     DEBUG = False
     WTF_CSRF_ENABLED = True
-    SECRET_KEY = 'IbZM55FJyk'
+    SECRET_KEY = os.environ.get("SECRET_KEY") or 'IbZM55FJyk'
     JWT_AUTH_URL_RULE = '/api/v1/auth/login/'
     JWT_AUTH_USERNAME_KEY = 'email'
     JWT_EXPIRATION_DELTA = datetime.timedelta(seconds=3600)
@@ -24,7 +32,8 @@ class ProductionEnvironment(MainConfiguration):
 
 
 class TestingEnvironment(MainConfiguration):
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(MainConfiguration.BASE_DIR, 'data-test.sqlite')
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://{}:{}@{}/{}'.format(POSTGRES_USER,POSTGRES_PW,POSTGRES_URL,POSTGRES_TEST_DB)
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = True
     TESTING = True
 
@@ -39,7 +48,7 @@ class DevelopmentEnvironment(MainConfiguration):
 
 app_config = {
     'main_config': MainConfiguration,
-    'production_env': ProductionEnvironment,
-    'testing_env': TestingEnvironment,
-    'development_env': DevelopmentEnvironment
+    'production': ProductionEnvironment,
+    'testing': TestingEnvironment,
+    'development': DevelopmentEnvironment
 }

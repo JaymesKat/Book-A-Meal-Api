@@ -1,3 +1,4 @@
+.env
 venv/
 key.txt
 *.pyc

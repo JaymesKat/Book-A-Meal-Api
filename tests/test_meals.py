@@ -104,4 +104,4 @@ class MealTestCase(BaseTest):
             self.assertIn('You must be an admin to access this resource', str(res.data))
 
 if __name__ == "__main__":
-    unittest.main()
+    super.unittest.main()

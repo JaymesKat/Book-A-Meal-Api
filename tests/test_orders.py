@@ -97,4 +97,4 @@ class OrderTestCase(BaseTest):
         self.assertEqual(result.status_code, 404)
 
 if __name__ == "__main__":
-    unittest.main()
+    super.unittest.main()

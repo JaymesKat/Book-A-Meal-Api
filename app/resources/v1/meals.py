@@ -1,10 +1,16 @@
 from flask import jsonify, request, abort
 from flask_restful import Resource
-from flask_jwt import JWT, jwt_required, current_identity
+from flask_jwt import jwt_required, current_identity
+from sqlalchemy.exc import IntegrityError
 from app.entities.meals import Meal
+from app.models import Meal
+from app.schemas import MealSchema
 import json
 
-meals_list = [ Meal(1, 'Rice & Chicken',10.5),Meal(2, 'Fries & Beef',13.5),Meal(3, 'Fries & Chicken',17), Meal(4, 'Potatoes & Beans',15)]
+meals_list = [ Meal('Rice & Chicken',10.5),Meal('Fries & Beef',13.5),Meal('Fries & Chicken',17), Meal('Potatoes & Beans',15)]
+
+meal_schema = MealSchema()
+meals_scehema = MealSchema(many=True)
 
 ''' This Meal class implements GET, PUT, DELETE methods for a Meal. Authorization for caterer only'''
 class MealResource(Resource):
@@ -18,14 +24,16 @@ class MealResource(Resource):
             response.status_code = 403
             return response
 
-        for meal in meals_list:
-            if meal.id == meal_id:
-                response = jsonify({'Meal': meal.serialize()})
-                response.status_code = 200
-                return response
+        try:
+            meal = Meal.query.get(meal_id)
+        except IntegrityError:
+            response = jsonify({"message": "Meal could not be found."})
+            response.status_code = 400
+            return response
 
-        response = jsonify({'result': False,'message':'The requested meal does not exist'})
-        response.status_code = 404
+        meal_result = meal_schema.load(meal)
+        response = jsonify({"Meal": meal_result})
+        response.status_code = 200
         return response
 
     # Update the information of a meal option

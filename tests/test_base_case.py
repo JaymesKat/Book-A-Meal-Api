@@ -3,14 +3,16 @@ import json
 from app.__init__ import app
 from app import create_app, db
 
+
 class BaseTest(unittest.TestCase):
+    
     def setUp(self):
-        self.app = app
-        self.app.testing = True
-        # self.app_context = self.app.app_context()
-        # self.app_context.push()
-        # db.create_all()
+        self.app = create_app('testing')
         self.client = self.app.test_client()
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        db.create_all()
+         
 
         self.customer = json.dumps({
             'email': 'paulkayongo@gmail.com',
@@ -36,7 +38,7 @@ class BaseTest(unittest.TestCase):
         })
 
     
-# def tearDown(self): 
-#     db.session.remove() 
-#     db.drop_all() 
-#     self.app_context.pop()
+    def tearDown(self): 
+        db.session.remove() 
+        db.drop_all() 
+        self.app_context.pop()
