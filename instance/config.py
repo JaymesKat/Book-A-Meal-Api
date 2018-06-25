@@ -31,7 +31,7 @@ class DevelopmentEnvironment(MainConfiguration):
 
 app_config = {
     'main_config': MainConfiguration,
-    'production_env': ProductionEnvironment,
-    'testing_env': TestingEnvironment,
-    'development_env': DevelopmentEnvironment
+    'production': ProductionEnvironment,
+    'testing': TestingEnvironment,
+    'development': DevelopmentEnvironment
 }
