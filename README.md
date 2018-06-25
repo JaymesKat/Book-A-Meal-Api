@@ -38,6 +38,8 @@ POST /api/v1/orders/ | Place a new order | Customer
 PUT /api/v1/orders/<order_id> | Update an order | Customer
 DELETE /api/v1/orders/<order_id> | Delete an order | Customer, Caterer
 
+Access the documentation for this API on this [link] (https://bookamealapi.herokuapp.com/)
+
 ## Technologies used
 
 * Python 3
