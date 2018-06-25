@@ -2,9 +2,8 @@ import datetime
 import json
 from tests.test_main import MainTest
 
-"""This class contains unit tests for the menu apis and functions"""
 class OrderTestCase(MainTest):
-
+    """This class contains unit tests for the menu apis and functions"""
     def test_api_customer_create_order(self):
         # A customer can create an order
         

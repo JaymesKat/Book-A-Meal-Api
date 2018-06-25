@@ -3,7 +3,7 @@ from flask import Flask, jsonify, Blueprint
 from flask_restful import Api
 from flask_jwt import JWT, jwt_required
 from instance.config import app_config
-from resources.v1.auth import LoginResource
+from .resources.v1.auth import LoginResource
 
 jwt = JWT(authentication_handler=LoginResource.authenticate, identity_handler=LoginResource.identity)
 

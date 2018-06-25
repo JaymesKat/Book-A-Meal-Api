@@ -1,11 +1,8 @@
 import json
 from tests.test_main import MainTest
 
-"""This class contains unit tests for the meal apis and functions"""
-
-
 class MealTestCase(MainTest):
-
+    """This class contains unit tests for the meal apis and functions"""
     def test_api_caterer_create_meal(self):
         ''' Test API - a caterer can create meal options'''
         res = self.client.post('/api/v1/auth/login/', data=self.caterer,content_type='application/json')
