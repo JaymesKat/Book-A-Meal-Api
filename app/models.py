@@ -1,6 +1,7 @@
 import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-from . import app, db
+from . import app
+from .extensions import db
 
 class BaseModel(db.Model):
     '''
@@ -8,13 +9,15 @@ class BaseModel(db.Model):
     '''
     __abstract__ = True
 
-    def add(self):
-        db.session.add(self)
-        db.session.commit()
+    def save(self):
+        with app.app_context():
+            db.session.add(self)
+            db.session.commit()
 
     def delete(self):
-        db.session.delete(self)
-        db.session.commit()
+        with app.app_context():
+            db.session.delete(self)
+            db.session.commit()
         
 
 class User(BaseModel):
@@ -70,7 +73,7 @@ class Menu(BaseModel):
         backref=db.backref('menu', lazy=True))
 
     def __repr__(self):
-        return '<Menu created: %r>' % self.date_created
+        return '<Menu created: %r>' % self.items
 
 class Order(BaseModel):
     id = db.Column(db.Integer, primary_key = True)

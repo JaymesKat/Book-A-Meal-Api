@@ -3,10 +3,14 @@ from flask import jsonify, request, abort
 from flask_restful import Resource
 from flask_jwt import jwt_required, current_identity
 from sqlalchemy.exc import IntegrityError
-from app.schemas import MealSchema
 from app.models import Meal
+from app import ma
 
-meals_list = [ Meal('Rice & Chicken',10.5),Meal('Fries & Beef',13.5),Meal('Fries & Chicken',17), Meal('Potatoes & Beans',15)]
+class MealSchema(ma.Schema):
+    class Meta:
+        model = Meal
+
+# meals_list = [ Meal('Rice & Chicken',10.5),Meal('Fries & Beef',13.5),Meal('Fries & Chicken',17), Meal('Potatoes & Beans',15)]
 
 meal_schema = MealSchema()
 meals_schema = MealSchema(many=True)
@@ -49,19 +53,11 @@ class MealResource(Resource):
         if meal: 
             meal.name = request.json['name']
             meal.price = request.json['price']
-            meal.add()
+            meal.save()
 
             response = jsonify({'Meal updated': meal_schema.dump(meal).data}) 
             response.status_code = 200
             return response
-        
-        # for meal_item in meals_list:
-        #     if meal_item.id == meal_id:
-        #         meal_item.name = request.json['name']
-        #         meal_item.price = request.json['price']
-        #         response = jsonify({'Meal': meal_item.serialize()})
-        #         response.status_code = 200
-        #         return response
         
         response = jsonify({'Message': 'This meal requested does not exist'})
         response.status_code = 404
@@ -74,13 +70,6 @@ class MealResource(Resource):
             response = jsonify({'message':'You must be an admin to access this resource'})
             response.status_code = 403
             return response
-
-        # for meal in meals_list:
-        #     if meal.id == meal_id:
-        #         meals_list.remove(meal)
-        #         response = jsonify({'result': True, 'message':'The meal has been deleted'})
-        #         response.status_code = 202
-        #         return response
 
         meal = Meal.query.get(meal_id)
         if meal: 
@@ -144,15 +133,7 @@ class MealListResource(Resource):
         }
 
         meal = Meal(meal_dict['name'],meal_dict['price'])
-        meal.add()
+        meal.save()
         response = jsonify({'Meal': meal_schema.dump(meal), 'Message': 'Meal added successfully'})
         response.status_code = 201
         return response
-    
-    @classmethod
-    def get_meals_by_id(cls, meal_id):
-        meal = None
-        for meal_item in meals_list:
-            if meal_item.id == meal_id:
-                meal = meal_item.serialize()
-        return meal

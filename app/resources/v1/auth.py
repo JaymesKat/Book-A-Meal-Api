@@ -45,7 +45,7 @@ class RegistrationResource(Resource):
         else:
             user = User(first_name=first_name,last_name=last_name,username=user_name, email=email,is_caterer=False)
             user.password(password)
-            user.add()
+            user.save()
             UserResource.register(first_name, last_name,user_name,email,password)
             response = jsonify({'message': 'User {} was created'.format(user_name)})
             response.status_code = 201

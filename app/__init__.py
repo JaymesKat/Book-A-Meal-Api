@@ -1,39 +1,44 @@
 import os
-from flask import Flask, jsonify, Blueprint
+from flask import Flask, Blueprint
 from flask_restful import Api
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt import JWT, jwt_required
-from flask_marshmallow import Marshmallow
 from instance.config import app_config
-from resources.v1.auth import LoginResource
+from .extensions import db, jwt, ma
+from resources.v1.meals import MealResource, MealListResource
+from resources.v1.orders import OrderResource, OrderListResource
+from resources.v1.menu import MenuResource
+from resources.v1.auth import RegistrationResource
 
-jwt = JWT(authentication_handler=LoginResource.authenticate, identity_handler=LoginResource.identity)
+class ApiInstance(object):
+    
+    def __init__(self, api_instance):
+        self.api = api_instance
 
-# Define response fields for successful login
-@jwt.auth_response_handler
-def auth_response_handler(access_token, identity):
-    return jsonify({
-            "message": "Successfully logged in",
-            'email': identity.email,
-            'access_token': access_token.decode('utf-8'),
-            'user_id': identity.id,
-            'is_admin': identity.is_caterer
-        })
+    def setup_routes(self):
 
+        self.api.add_resource(RegistrationResource,'/api/v1/auth/register/')
 
-# Initialize SQLAlchemy ORM instance
-db = SQLAlchemy()
+        self.api.add_resource(OrderListResource, '/api/v1/orders/')
 
-# Initialize Marshmallow package for object serialization/deserialization
-ma = Marshmallow()
+        self.api.add_resource(OrderResource, '/api/v1/orders/<int:order_id>')
 
-# Function definition for creating application instance
+        self.api.add_resource(MealListResource, '/api/v1/meals/')
+
+        self.api.add_resource(MealResource, '/api/v1/meals/<int:meal_id>')
+
+        self.api.add_resource(MenuResource, '/api/v1/menu/')
+
+def configure_extensions(app):
+    """configure flask extensions
+    """
+    jwt.init_app(app)
+    db.init_app(app)
+    ma.init_app(app)
+
 def create_app(config_name):
+    """Function definition for creating application instance
+    """
     app = Flask(__name__)
     app.config.from_object(app_config[config_name])
-
-    # Push application context
-    app.app_context().push()
 
     from .main import default as default_bp
     app.register_blueprint(default_bp)
@@ -43,17 +48,19 @@ def create_app(config_name):
     api = Api(api_bp)
 
     #Setup api endpoints
-    from .app import ApiInstance 
     api_instance = ApiInstance(api)
     api_instance.setup_routes()
     # Register api blueprint
     app.register_blueprint(api_bp)
 
-    jwt.init_app(app)
-    db.init_app(app)
-    ma.init_app(app)
+    configure_extensions(app)
+
+    # Push application context
+    app.app_context().push()
    
     return app
+
+
 
 # Create flask app instance
 app = create_app('development')

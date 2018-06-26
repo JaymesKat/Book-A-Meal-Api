@@ -2,10 +2,15 @@ from flask import jsonify, request, abort
 from flask_jwt import JWT, jwt_required, current_identity
 from flask_restful import Resource
 from app.resources.v1.meals import MealResource, MealListResource
-from app.entities.menu import Menu
+from app.models import Menu, Meal
+from app import ma
+
+class MenuSchema(ma.Schema):
+    class Meta:
+        model = Menu
 
 ''' This Menu class implements GET and POST methods for a Meal. Authorization for both customer and caterer'''
-
+menu_schema = MenuSchema()
 class MenuResource(Resource):
 
     daily_menu = Menu([4, 1, 3, 2])
@@ -14,10 +19,8 @@ class MenuResource(Resource):
     # Get menu for the day
     @jwt_required()
     def get(self):
-        meals = []
-        for meal_id in self.daily_menu.meal_list:
-            meals.append(MealListResource.get_meals_by_id(meal_id))
-        response = jsonify({'menu': meals})
+        menu = Menu.query.order_by('updated desc').first()     
+        response = jsonify({'Today\'s menu': menu_schema.dump(menu)})
         response.status_code = 200
         return response
 
@@ -30,11 +33,14 @@ class MenuResource(Resource):
             return response  
                   
         request.get_json(force=True)
-        self.daily_menu = Menu(request.json['meal_ids'])
-        response = jsonify({'Menu': self.daily_menu.serialize()})
+        meal_ids = request.json['meal_ids']
+
+        menu = Menu()
+        for meal_id in meal_ids:
+            if isinstance(meal_id,int):
+                menu.items.append(Meal.query.get(meal_id))
+        menu.save()       
+        
+        response = jsonify({'Menu': menu_schema.dump(menu)})
         response.status_code = 201
         return response
-
-    # Update menu for the day
-    def put(self):
-        pass
