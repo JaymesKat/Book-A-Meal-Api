@@ -1,5 +1,5 @@
 import datetime
-from flask import request, jsonify
+from flask import request, jsonify, redirect, url_for
 from flask_jwt import JWT, jwt_required, current_identity
 from flask_restful import Resource
 from app.resources.v1.users import UserResource
@@ -60,3 +60,6 @@ class LoginResource(Resource):
     def identity(payload):
         user_id = payload['identity']
         return UserResource.get_user_by_id(user_id)
+
+    def post(self):
+        return redirect('/api/v1/auth/login/',code=307)

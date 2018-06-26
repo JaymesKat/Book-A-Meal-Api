@@ -11,6 +11,7 @@ class ApiInstance(object):
     def setup_routes(self):
 
         self.api.add_resource(RegistrationResource,'/api/v1/auth/register/','/api/v1/auth/register', endpoint="register", strict_slashes=False)
+        self.api.add_resource(LoginResource,'/api/v1/auth/login', endpoint="jwt")
 
         self.api.add_resource(OrderListResource, '/api/v1/orders/', '/api/v1/orders', endpoint="order", strict_slashes=False)
 
