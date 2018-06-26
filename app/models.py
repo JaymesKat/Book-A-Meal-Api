@@ -1,6 +1,6 @@
 import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-from . import db
+from . import app, db
 
 class BaseModel(db.Model):
     '''
@@ -80,4 +80,4 @@ class Order(BaseModel):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
 
     def __repr__(self):
-        return '<Order: #%r>' % self.id
+        return '<Order: %r on %r>',format(self.meal.name,self.date_submitted)

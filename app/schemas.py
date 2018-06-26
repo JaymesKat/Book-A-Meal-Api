@@ -1,4 +1,4 @@
-from . import ma
+from . import app, ma
 from .models import Meal, Menu, Order, User
 
 class MealSchema(ma.Schema):
