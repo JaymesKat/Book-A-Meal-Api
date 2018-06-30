@@ -1,4 +1,6 @@
-from flask import jsonify, request
+
+import pdb 
+from flask import jsonify, request, redirect
 from flask_restful import Resource
 from app.resources.v1.users import UserResource
 from app.models import User
@@ -43,10 +45,13 @@ class RegistrationResource(Resource):
             response.status_code = 409
             return response
         else:
-            user = User(first_name=first_name,last_name=last_name,username=user_name, email=email,is_caterer=False)
-            user.password(password)
+            user = User(first_name=first_name,
+                        last_name=last_name,
+                        username=user_name, 
+                        email=email,
+                        is_caterer=False)
+            user.password = password
             user.save()
-            UserResource.register(first_name, last_name,user_name,email,password)
             response = jsonify({'message': 'User {} was created'.format(user_name)})
             response.status_code = 201
             return response
@@ -58,12 +63,13 @@ class LoginResource(Resource):
     def authenticate(email, password):
         user = User.query.filter_by(email=email).first()
         if user.verify_password(password):
-        # user = UserResource.get_user(email, password)
             return user
-        return None
 
     @staticmethod
     def identity(payload):
         user_id = payload['identity']
         user = User.query.get(user_id)
         return user
+
+    def post(self):
+        return redirect('/api/v1/auth/login/',code=307)

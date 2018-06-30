@@ -13,8 +13,6 @@ class MenuSchema(ma.Schema):
 menu_schema = MenuSchema()
 class MenuResource(Resource):
 
-    daily_menu = Menu([4, 1, 3, 2])
-
     # CRUD operations
     # Get menu for the day
     @jwt_required()

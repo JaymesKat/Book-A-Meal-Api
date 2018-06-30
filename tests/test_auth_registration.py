@@ -23,7 +23,7 @@ class RegistrationTestCase(BaseTest):
 
     def test_user_already_registered(self):
         ''' Test if user is already registered'''
-        test_data = json.dumps({"first_name": "James", "last_name": "Katarikawe", "user_name": "jameskatarikawe", "email": "james@example.com", "password": "@password"})
+        test_data = json.dumps({"first_name": "Joshua", "last_name": "Mugisha", "user_name": "jmugisha", "email": "joshua@example.com", "password": "@password"})
         res = self.client.post('/api/v1/auth/register/', data=test_data)
         res = self.client.post('/api/v1/auth/register/', data=test_data)
         self.assertEqual(res.status_code, 409)

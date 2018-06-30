@@ -3,14 +3,14 @@ from app.models import User, Meal, Menu, Order
 def insert_table_data(db):
 
     customer1 = User(first_name='James',last_name='Katarikawe',username='james_katarikawe', email='james@example.com',is_caterer=False)
-    customer1.password('james')
+    customer1.password = 'james'
     customer2 = User(first_name='Paul',last_name='Kayongo',username='paul_kayongo', email='paulkayongo@gmail.com',is_caterer=False)
-    customer2.password('kayongo')
+    customer2.password = 'kayongo'
 
     admin1 = User(first_name='Joseph',last_name='Odur',username='joseph_odur', email='odur@gmail.com',is_caterer=True)
-    admin1.password('odur')
+    admin1.password = 'odur'
     admin2 = User(first_name='Phillip',last_name='Seryazi',username='phillip_seryazi', email='seryazi@gmail.com',is_caterer=True)
-    admin1.password('seryazi')
+    admin2.password = 'seryazi'
     
     meal1 = Meal(name="Rice & Chicken", price=10.5)
     meal2 = Meal(name="Posho & Beans", price=9.0)
