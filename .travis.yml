@@ -15,7 +15,7 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
-  - py.test --cov-report= --cov=api tests/
+  - py.test --cov-report= --cov=app tests/
   - coverage report
 
 # generate code climate report  

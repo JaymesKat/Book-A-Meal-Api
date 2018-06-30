@@ -1,5 +1,6 @@
 import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from validate_email import validate_email
 from . import db
 
 class BaseModel(db.Model):
@@ -26,7 +27,7 @@ class User(BaseModel):
     email = db.Column(db.String(60), unique=True, index=True, nullable=False)
     is_caterer = db.Column(db.Boolean,default=False)
     password_hash = db.Column(db.String(128), nullable=False)
-    orders = db.relationship('Order', backref='user')
+    orders = db.relationship('Order', backref='user', cascade='all, delete-orphan')
 
 
     @property
@@ -40,6 +41,11 @@ class User(BaseModel):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    @staticmethod
+    def email_is_valid(email):
+        is_valid = validate_email(email)
+        return is_valid
+
 menu_items = db.Table('menu_items',
     db.Column('menu_id', db.Integer, db.ForeignKey('menu.id'), primary_key=True),
     db.Column('meal_id', db.Integer, db.ForeignKey('meals.id'), primary_key=True)
@@ -50,7 +56,7 @@ class Meal(BaseModel):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(40))
     price = db.Column(db.Float)
-    orders = db.relationship('Order', backref='meal')
+    orders = db.relationship('Order', backref='meal', cascade='all, delete-orphan')
 
     def __repr__(self):
         return '<Meal: %r>' % self.name
