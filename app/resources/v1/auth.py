@@ -2,7 +2,6 @@
 import pdb 
 from flask import jsonify, request, redirect
 from flask_restful import Resource
-from app.resources.v1.users import UserResource
 from app.models import User
 
 ''' This class handles user registration '''

@@ -2,8 +2,8 @@
 > Book-A-Meal-API is an API  that allow customers to make food orders and helps food vendors know what the customers' orders and manage them. This project was done during the Andela Bootcamp Cohort 7
 
 [![Build Status](https://travis-ci.org/Jpkat92/Book-A-Meal-Api.svg?branch=develop)](https://travis-ci.org/Jpkat92/Book-A-Meal-Api)
-[![Coverage Status](https://coveralls.io/repos/github/Jpkat92/Book-A-Meal-Api/badge.svg?branch=develop)](https://coveralls.io/github/Jpkat92/Book-A-Meal-Api?branch=develop)
-[![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/Jpkat92/Book-A-Meal-Api)
+[![Coverage Status](https://coveralls.io/repos/github/Jpkat92/Book-A-Meal-Api/badge.svg?branch=develop&service=github)](https://coveralls.io/github/Jpkat92/Book-A-Meal-Api?branch=develop&service=github)
+[![Maintainability](https://api.codeclimate.com/v1/badges/10b3693f42728912f883/maintainability)](https://codeclimate.com/github/Jpkat92/Book-A-Meal-Api/maintainability)
 
 ## Features
 

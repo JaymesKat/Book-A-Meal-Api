@@ -72,9 +72,10 @@ class MealTestCase(BaseTest):
 
         self.assertEqual(res.status_code, 201)
         response_data = json.loads(res.data.decode())
-        new_id = response_data['Meal']['id']
+        print(response_data)
+        meal_id = response_data['Meal']['id']
 
-        rs = self.client.put('/api/v1/meals/' + str(new_id),
+        rs = self.client.put('/api/v1/meals/' + str(meal_id),
                              data=json.dumps({"name": "Spaghetti & Cheese", "price": "13.5"}),
                              content_type='application/json',
                              headers=dict(Authorization='JWT ' + res_data['access_token']))
@@ -83,7 +84,7 @@ class MealTestCase(BaseTest):
 
         results = self.client.get(
             '/api/v1/meals/' +
-            str(new_id),
+            str(meal_id),
             content_type='application/json',
             headers=dict(
                 Authorization='JWT ' +
@@ -107,22 +108,25 @@ class MealTestCase(BaseTest):
                                data=json.dumps({'name': 'Posho & Meat', 'price': '9.0'}),
                                content_type='application/json',
                                headers=dict(Authorization='JWT ' + res_data['access_token']))
+
         self.assertEqual(res.status_code, 201)
         response_data = json.loads(res.data.decode())
-        new_id = response_data['Meal'][0]['id']
+        meal_id = response_data['Meal']['id']
+
         res = self.client.delete(
             '/api/v1/meals/' +
-            str(new_id),
+            str(meal_id),
             content_type='application/json',
             headers=dict(
                 Authorization='JWT ' +
                 res_data['access_token']))
+
         self.assertEqual(res.status_code, 202)
 
         # Test to see if it does not exist, should return a 404
         result = self.client.get(
             '/api/v1/meals/' +
-            str(new_id),
+            str(meal_id),
             content_type='application/json',
             headers=dict(
                 Authorization='JWT ' +

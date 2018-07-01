@@ -49,10 +49,6 @@ class BaseTest(unittest.TestCase):
             "password": "odur"
         })
 
-        self.order = json.dumps({
-            'meal_id': 5
-        })
-
         self.meal = json.dumps({
             "name": "Posho & Meat",
             "price": "10.5"
@@ -69,7 +65,7 @@ class BaseTest(unittest.TestCase):
             '/api/v1/meals/',
             data=json.dumps(
                 {
-                    "name": "Pilau",
+                    "name": "Pasta",
                     "price": "12"}),
             content_type='application/json',
             headers=dict(
@@ -77,7 +73,7 @@ class BaseTest(unittest.TestCase):
                 res_data['access_token']))
 
         response_data = json.loads(res_1.data.decode())
-        meal_id_1 = int(response_data['Meal'][0]['id'])
+        meal_id_1 = response_data['Meal']['id']
 
         res_2 = self.client.post(
             '/api/v1/meals/',
@@ -91,7 +87,7 @@ class BaseTest(unittest.TestCase):
                 res_data['access_token']))
 
         response_data = json.loads(res_2.data.decode())
-        meal_id_2 = int(response_data['Meal'][0]['id'])
+        meal_id_2 = int(response_data['Meal']['id'])
 
         res_3 = self.client.post(
             '/api/v1/meals/',
@@ -105,7 +101,7 @@ class BaseTest(unittest.TestCase):
                 res_data['access_token']))
 
         response_data = json.loads(res_3.data.decode())
-        meal_id_3 = int(response_data['Meal'][0]['id'])
+        meal_id_3 = int(response_data['Meal']['id'])
 
         res_4 = self.client.post(
             '/api/v1/meals/',
@@ -119,11 +115,15 @@ class BaseTest(unittest.TestCase):
                 res_data['access_token']))
 
         response_data = json.loads(res_4.data.decode())
-        meal_id_4 = int(response_data['Meal'][0]['id'])
+        meal_id_4 = int(response_data['Meal']['id'])
 
         # Add items to the menu
         self.menu_list = json.dumps(
             {"meal_ids": [meal_id_1, meal_id_2, meal_id_3, meal_id_4]})
+
+        self.order = json.dumps({
+            'meal_id': meal_id_1
+        })
 
     def tearDown(self):
         db.session.remove()

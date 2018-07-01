@@ -13,7 +13,8 @@ class LoginTestCase(BaseTest):
             "last_name": "Mugisha",
             "user_name": "jmugisha",
             "email": "joshua@example.com",
-            "password": "@password"
+            "password": "@password",
+            "is_caterer": False
         }
         res = self.client.post(
             '/api/v1/auth/register/',

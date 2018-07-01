@@ -4,10 +4,10 @@ from flask_restful import Api
 from instance.config import app_config
 from .extensions import db, ma
 from flask_jwt import JWT
-from resources.v1.meals import MealResource, MealListResource
-from resources.v1.orders import OrderResource, OrderListResource
-from resources.v1.menu import MenuResource
-from resources.v1.auth import RegistrationResource, LoginResource
+from app.resources.v1.meals import MealResource, MealListResource
+from app.resources.v1.orders import OrderResource, OrderListResource
+from app.resources.v1.menu import MenuResource
+from app.resources.v1.auth import RegistrationResource, LoginResource
 
 jwt = JWT(authentication_handler=LoginResource.authenticate, identity_handler=LoginResource.identity)
 

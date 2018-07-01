@@ -12,7 +12,8 @@ class RegistrationTestCase(BaseTest):
             "last_name": "Mandela",
             "user_name": "mandela",
             "email": "mandela@example.com",
-            "password": "@password123"}
+            "password": "@password123",
+            "is_caterer": False}
 
         res = self.client.post(
             '/api/v1/auth/register/',
@@ -32,6 +33,7 @@ class RegistrationTestCase(BaseTest):
                                 "user_name": "",
                                 "email": " ",
                                 "password": " "})
+
         res = self.client.post(
             '/api/v1/auth/register/',
             data=test_data,
@@ -46,7 +48,8 @@ class RegistrationTestCase(BaseTest):
                                 "last_name": "Katarikawe",
                                 "user_name": "jpkat92",
                                 "email": "nbdsfh2343",
-                                "password": "pass"})
+                                "password": "pass",
+                                "is_caterer": False})
         res = self.client.post(
             '/api/v1/auth/register/',
             data=test_data,
@@ -64,7 +67,9 @@ class RegistrationTestCase(BaseTest):
                                 "last_name": "Mugisha",
                                 "user_name": "jmugisha",
                                 "email": "joshua@example.com",
-                                "password": "@password"})
+                                "password": "@password",
+                                "is_caterer": False})
+
         res = self.client.post('/api/v1/auth/register/', data=test_data)
         res = self.client.post('/api/v1/auth/register/', data=test_data)
         self.assertEqual(res.status_code, 409)
@@ -77,12 +82,15 @@ class RegistrationTestCase(BaseTest):
                                 "last_name": "Mugisha",
                                 "user_name": "jmugisha",
                                 "email": "joshua@example.com",
-                                "password": "@password"})
+                                "password": "@password",
+                                "is_caterer": False})
+
         test_data_1 = json.dumps({"first_name": "Josh",
                                   "last_name": "Mug",
                                   "user_name": "jmugisha",
                                   "email": "joshua1@example.com",
-                                  "password": "@password"})
+                                  "password": "@password",
+                                  "is_caterer": False})
         res = self.client.post('/api/v1/auth/register/', data=test_data)
         res = self.client.post('/api/v1/auth/register/', data=test_data_1)
         self.assertEqual(res.status_code, 409)

@@ -7,11 +7,11 @@ APP_ROOT = os.path.join(os.path.dirname(__file__), '..')
 dotenv_path = os.path.join(APP_ROOT, '.env')
 load_dotenv(dotenv_path)
 
-POSTGRES_URL = os.environ.get("POSTGRES_URL")
-POSTGRES_USER = os.environ.get("POSTGRES_USER")
-POSTGRES_PW = os.environ.get("POSTGRES_PW")
-POSTGRES_DB = os.environ.get("POSTGRES_DB")
-POSTGRES_TEST_DB = os.environ.get("POSTGRES_TEST_DB")
+POSTGRES_URL = os.environ.get("POSTGRES_URL") or "localhost"
+POSTGRES_USER = os.environ.get("POSTGRES_USER") or "jameskatarikawe"
+POSTGRES_PW = os.environ.get("POSTGRES_PW") or ""
+POSTGRES_DB = os.environ.get("POSTGRES_DB") or "book_a_meal"
+POSTGRES_TEST_DB = os.environ.get("POSTGRES_TEST_DB")  or "book_a_meal_test"
 
 # Multiple Configuration settings for app
 
