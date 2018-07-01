@@ -81,7 +81,7 @@ class Order(BaseModel):
     date_submitted = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     completed = db.Column(db.Boolean,default=False)
     meal_id = db.Column(db.Integer, db.ForeignKey('meals.id'),nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'),nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'),nullable=False)  
 
     def __repr__(self):
-        return '<Order: %r on %r>'%format(self.meal.name,self.date_submitted)
+        return '<Order {}: Meal id:{} by User id:{} at {}>'%format(self.id, self.meal_id, self.user_id, self.date_submitted)
