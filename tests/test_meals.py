@@ -12,10 +12,13 @@ class MealTestCase(BaseTest):
             '/api/v1/auth/login/',
             data=self.caterer,
             content_type='application/json')
+
         res_data = json.loads(res.data.decode())
+
         self.assertTrue(res_data['message'] == 'Successfully logged in')
         self.assertTrue(res_data['access_token'])
         self.assertEqual(res.status_code, 200)
+
         second_res = self.client.post(
             '/api/v1/meals/',
             data=json.dumps(
@@ -26,6 +29,7 @@ class MealTestCase(BaseTest):
             headers=dict(
                 Authorization='JWT ' +
                 res_data['access_token']))
+
         self.assertEqual(second_res.status_code, 201)
         self.assertIn('Posho & Peas', str(second_res.data))
 
@@ -199,7 +203,7 @@ class MealTestCase(BaseTest):
             headers=dict(
                 Authorization='JWT ' +
                 res_data['access_token']))
-        
+
         self.assertEqual(second_res.status_code, 201)
         self.assertIn('Ugali', str(second_res.data))
 
@@ -210,10 +214,10 @@ class MealTestCase(BaseTest):
             headers=dict(
                 Authorization='JWT ' +
                 res_data['access_token']))
-        
+
         self.assertEqual(third_res.status_code, 409)
-        self.assertIn( "Duplicate, enter a unique meal name",
-            str(third_res.data))
+        self.assertIn("Duplicate, enter a unique meal name",
+                      str(third_res.data))
 
     def test_request_should_not_have_missing_field(self):
         ''' Test API - a caterer can create meal options'''
