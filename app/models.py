@@ -59,7 +59,7 @@ class Meal(BaseModel):
     orders = db.relationship('Order', backref='meal', cascade='all, delete-orphan')
 
     def __repr__(self):
-        return '<Meal: %r>' % self.name
+        return '<Meal {}: {}>'.format(self.id, self.name)
 
     def __init__(self, name, price):
         self.name = name
