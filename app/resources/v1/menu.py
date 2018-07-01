@@ -32,7 +32,7 @@ class MenuResource(Resource):
     # Create menu for the day by caterer
     @jwt_required()
     def post(self):
-        if current_identity.is_caterer == False:
+        if not current_identity.is_caterer:
             response = jsonify({'message':'You must be an admin to access this resource'})
             response.status_code = 403
             return response  

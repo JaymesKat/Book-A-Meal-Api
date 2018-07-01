@@ -2,14 +2,13 @@ import datetime
 from flask import jsonify, request, abort
 from flask_restful import Resource
 from flask_jwt import JWT, jwt_required, current_identity
-from app.models import Order
+from app.models import Order, User, Meal
 from app import ma
 
-order_keys = ['meal_id', 'user_id']
 
 class OrderSchema(ma.Schema):
     class Meta:
-        model = Order
+        fields = ("id", "user_id", "meal_id", "date_submitted")
 
 
 order_schema = OrderSchema()
@@ -36,7 +35,7 @@ class OrderResource(Resource):
     # Authorization for customer only
     @jwt_required()
     def put(self, order_id):
-        if current_identity['is_caterer'] == True:
+        if current_identity.is_caterer:
             response = jsonify({'message':'An admin(caterer) is not allowed to update an order'})
             response.status_code = 403
             return response
@@ -45,8 +44,7 @@ class OrderResource(Resource):
 
         order = Order.query.get(order_id)
         if order:
-            order.user_id= current_identity['id']
-            order.edited = True
+            order.user_id= current_identity.id
             order.save()
             response = jsonify({'order': order_schema.dump(order)})
             response.status_code = 202
@@ -78,7 +76,7 @@ class OrderListResource(Resource):
     # Authorization for caterer only
     @jwt_required()
     def get(self):        
-        if current_identity['is_caterer'] == False:
+        if not current_identity.is_caterer:
             response = jsonify({'message':'You must be an admin to access this resource'})
             response.status_code = 403
             return response
@@ -90,7 +88,7 @@ class OrderListResource(Resource):
      # Create a new order, handles a selected meal option from the menu, customer role
     @jwt_required()
     def post(self):
-        if current_identity['is_caterer'] == True:
+        if current_identity.is_caterer:
             response = jsonify({'message':'An admin(caterer) is not allowed to post an order'})
             response.status_code = 403
             return response
@@ -99,17 +97,23 @@ class OrderListResource(Resource):
         if not request.json:
             abort(400)
 
-        for key in request.json.keys():
-            if key not in order_keys:
+        if 'meal_id' not in request.json.keys():
                 abort(400)
 
+        meal_id = request.json['meal_id']
 
-        order_dict = {
-            'meal_id': request.json['meal_id'],
-            'user_id': current_identity['id']
-        }
-        order = Order(order_dict['meal_id'],order_dict['user_id'])
-        order.save()
-        response = jsonify({'order': order.serialize()})
-        response.status_code = 201
+        user = User.query.get(current_identity.id)  
+        meal = Meal.query.get(meal_id)
+
+        if meal:
+            order = Order(meal_id=meal.id,user_id=user.id)
+            order.save()
+
+            order = order_schema.dump(order)
+            response = jsonify({'order': order.data})
+            response.status_code = 201
+            return response
+
+        response = jsonify({'Message': "The meal order does not exist"})
+        response.status_code = 404
         return response

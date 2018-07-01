@@ -20,7 +20,7 @@ class MealResource(Resource):
     # Get a single meal option by id
     @jwt_required()
     def get(self, meal_id):
-        if current_identity.is_caterer == False:
+        if not current_identity.is_caterer:
             response = jsonify({'message':'You must be an admin to access this resource'})
             response.status_code = 403
             return response
@@ -42,7 +42,7 @@ class MealResource(Resource):
     @jwt_required()
     def put(self, meal_id):
 
-        if current_identity.is_caterer == False:
+        if not current_identity.is_caterer:
             response = jsonify({'message':'You must be an admin to access this resource'})
             response.status_code = 403
             return response
@@ -65,7 +65,7 @@ class MealResource(Resource):
     # Delete a meal option
     @jwt_required()
     def delete(self, meal_id):
-        if current_identity.is_caterer == False:
+        if not current_identity.is_caterer:
             response = jsonify({'message':'You must be an admin to access this resource'})
             response.status_code = 403
             return response
@@ -88,7 +88,7 @@ class MealListResource(Resource):
     # Get all meal options
     @jwt_required()
     def get(self):
-        if current_identity.is_caterer == False:
+        if not current_identity.is_caterer:
             response = jsonify({'message':'You must be an admin to access this resource'})
             response.status_code = 403
             return response
@@ -101,13 +101,15 @@ class MealListResource(Resource):
     # Add a meal option
     @jwt_required()
     def post(self):
-        request.get_json(force=True)
 
         # check for access role
-        if current_identity.is_caterer == False:
+        if not current_identity.is_caterer:
             response = jsonify({'message':'You must be an admin to access this resource'})
             response.status_code = 403
             return response
+
+
+        request.get_json(force=True)
 
         # check for missing fields
         if not request.json or not 'name' in request.json or not 'price' in request.json:
@@ -131,6 +133,6 @@ class MealListResource(Resource):
 
         meal = Meal(meal_dict['name'],meal_dict['price'])
         meal.save()
-        response = jsonify({'Meal': meal_schema.dump(meal), 'Message': 'Meal added successfully'})
+        response = jsonify({'Meal': meal_schema.dump(meal).data, 'Message': 'Meal added successfully'})
         response.status_code = 201
         return response
