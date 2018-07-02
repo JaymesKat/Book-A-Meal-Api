@@ -1,20 +1,25 @@
-
 language: python
 python:
   - "3.6"
 
+cache: pip
+
 services:
   - postgresql
 
+git:
+  depth: false
+
 env: 
   global:
-    - CC_TEST_REPORTER_ID=f2e5b540569f3e8c0aef58c1df479e26b89e49b051666d40454af5c79a8a10f9
-  
+    - CC_TEST_REPORTER_ID=f2e5b540569f3e8c0aef58c1df479e26b89e49b051666d40454af5c79a8a10f9 
+
 install:
   - pip install -r requirements.txt
 
 before_script:
-  - psql -c 'create database book_a_meal_test;' -U jameskatarikawe
+  - cp instance/database.yml.travis instance/database.yml
+  - psql -c 'create database book_a_meal_test;' -U postgres
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
