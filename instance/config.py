@@ -31,7 +31,7 @@ class ProductionEnvironment(MainConfiguration):
 
 
 class TestingEnvironment(MainConfiguration):
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://{}:{}@{}/{}'.format(POSTGRES_USER,POSTGRES_PW,POSTGRES_URL,POSTGRES_TEST_DB)
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://{}:{}@{}/{}'.format("postgres","",POSTGRES_URL,POSTGRES_TEST_DB)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = True
     TESTING = True
