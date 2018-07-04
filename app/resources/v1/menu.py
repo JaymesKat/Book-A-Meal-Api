@@ -6,6 +6,7 @@ from app.entities.menu import Menu
 
 ''' This Menu class implements GET and POST methods for a Meal. Authorization for both customer and caterer'''
 
+
 class MenuResource(Resource):
 
     daily_menu = Menu([4, 1, 3, 2])
@@ -24,11 +25,12 @@ class MenuResource(Resource):
     # Create menu for the day by caterer
     @jwt_required()
     def post(self):
-        if current_identity['is_caterer'] == False:
-            response = jsonify({'message':'You must be an admin to access this resource'})
+        if not current_identity['is_caterer']:
+            response = jsonify(
+                {'message': 'You must be an admin to access this resource'})
             response.status_code = 403
-            return response  
-                  
+            return response
+
         request.get_json(force=True)
         self.daily_menu = Menu(request.json['meal_ids'])
         response = jsonify({'Menu': self.daily_menu.serialize()})

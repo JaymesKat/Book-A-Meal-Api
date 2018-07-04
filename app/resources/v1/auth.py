@@ -4,16 +4,18 @@ from flask_jwt import JWT, jwt_required, current_identity
 from flask_restful import Resource
 from app.resources.v1.users import UserResource
 
+
 class RegistrationResource(Resource):
-    ''' This class handles user registration '''    
-    registration_fields = ['first_name', 'last_name', 'user_name', 'email','password']
+    ''' This class handles user registration '''
+    reg_fields = ['first_name', 'last_name', 'user_name', 'email', 'password']
 
     def post(self):
         request.get_json(force=True)
 
-        for key in self.registration_fields:
+        for key in self.reg_fields:
             if key not in request.json.keys():
-                response = jsonify({'Error': 'Missing fields: provide first name, last name, user name, email and password'})
+                response = jsonify(
+                    {'Error': 'Missing fields: provide first name, last name, user name, email and password'})
                 response.status_code = 400
                 return response
             elif not request.json[key]:
@@ -21,7 +23,6 @@ class RegistrationResource(Resource):
                 response.status_code = 400
                 return response
 
-        
         user_name = request.json['user_name'].strip()
         email = request.json['email'].strip()
         password = request.json['password'].strip()
@@ -29,7 +30,8 @@ class RegistrationResource(Resource):
         last_name = request.json['last_name'].strip()
 
         if not UserResource.email_is_valid(email):
-            response = jsonify({'Error': 'This email is invalid. Please check again and resend'})
+            response = jsonify(
+                {'Error': 'This email is invalid. Please check again and resend'})
             response.status_code = 400
             return response
 
@@ -43,14 +45,20 @@ class RegistrationResource(Resource):
             response.status_code = 409
             return response
         else:
-            UserResource.register(first_name, last_name,user_name,email,password)
-            response = jsonify({'message': 'User {} was created'.format(user_name)})
+            UserResource.register(
+                first_name,
+                last_name,
+                user_name,
+                email,
+                password)
+            response = jsonify(
+                {'message': 'User {} was created'.format(user_name)})
             response.status_code = 201
             return response
 
 
 class LoginResource(Resource):
-    ''' This class handles user authentication and authorization ''' 
+    ''' This class handles user authentication and authorization '''
     @staticmethod
     def authenticate(email, password):
         user = UserResource.get_user(email, password)
@@ -62,4 +70,4 @@ class LoginResource(Resource):
         return UserResource.get_user_by_id(user_id)
 
     def post(self):
-        return redirect('/api/v1/auth/login/',code=307)
+        return redirect('/api/v1/auth/login/', code=307)

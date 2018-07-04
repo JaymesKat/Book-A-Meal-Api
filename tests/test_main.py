@@ -2,6 +2,7 @@ import unittest
 import json
 from app import app
 
+
 class MainTest(unittest.TestCase):
     def setUp(self):
         self.app = app
@@ -30,5 +31,3 @@ class MainTest(unittest.TestCase):
         self.menu_list = json.dumps({
             'meal_ids': [4, 2]
         })
-
-        
