@@ -15,9 +15,11 @@ order_schema = OrderSchema()
 orders_schema = OrderSchema(many=True)
 
 ''' This Order class implements GET, PUT, DELETE methods for an Order.'''
+
+
 class OrderResource(Resource):
 
-    # Get an order by order id 
+    # Get an order by order id
     # Authorization for caterer and customer
     @jwt_required()
     def get(self, order_id):
@@ -36,7 +38,8 @@ class OrderResource(Resource):
     @jwt_required()
     def put(self, order_id):
         if current_identity.is_caterer:
-            response = jsonify({'message':'An admin(caterer) is not allowed to update an order'})
+            response = jsonify(
+                {'message': 'An admin(caterer) is not allowed to update an order'})
             response.status_code = 403
             return response
 
@@ -44,12 +47,12 @@ class OrderResource(Resource):
 
         order = Order.query.get(order_id)
         if order:
-            order.user_id= current_identity.id
+            order.user_id = current_identity.id
             order.save()
             response = jsonify({'order': order_schema.dump(order)})
             response.status_code = 202
             return response
-        
+
         response = jsonify({'message': 'Order does not exist'})
         response.status_code = 404
         return response
@@ -67,7 +70,6 @@ class OrderResource(Resource):
         response = jsonify({'Message': 'Order does not exist'})
         response.status_code = 404
         return response
-        
 
 
 class OrderListResource(Resource):
@@ -75,21 +77,24 @@ class OrderListResource(Resource):
     # Get all orders
     # Authorization for caterer only
     @jwt_required()
-    def get(self):        
+    def get(self):
         if not current_identity.is_caterer:
-            response = jsonify({'message':'You must be an admin to access this resource'})
+            response = jsonify(
+                {'message': 'You must be an admin to access this resource'})
             response.status_code = 403
             return response
-        orders = Order.query.all()    
+        orders = Order.query.all()
         response = jsonify({'orders': orders_schema.dump(orders)})
         response.status_code = 200
         return response
 
-     # Create a new order, handles a selected meal option from the menu, customer role
+     # Create a new order, handles a selected meal option from the menu,
+     # customer role
     @jwt_required()
     def post(self):
         if current_identity.is_caterer:
-            response = jsonify({'message':'An admin(caterer) is not allowed to post an order'})
+            response = jsonify(
+                {'message': 'An admin(caterer) is not allowed to post an order'})
             response.status_code = 403
             return response
 
@@ -98,15 +103,15 @@ class OrderListResource(Resource):
             abort(400)
 
         if 'meal_id' not in request.json.keys():
-                abort(400)
+            abort(400)
 
         meal_id = request.json['meal_id']
 
-        user = User.query.get(current_identity.id)  
+        user = User.query.get(current_identity.id)
         meal = Meal.query.get(meal_id)
 
         if meal:
-            order = Order(meal_id=meal.id,user_id=user.id)
+            order = Order(meal_id=meal.id, user_id=user.id)
             order.save()
 
             order = order_schema.dump(order)

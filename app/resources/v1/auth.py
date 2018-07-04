@@ -1,20 +1,23 @@
 
-import pdb 
+import pdb
 from flask import jsonify, request, redirect
 from flask_restful import Resource
 from app.models import User
 
 ''' This class handles user registration '''
+
+
 class RegistrationResource(Resource):
-   
-    registration_fields = ['first_name', 'last_name', 'user_name', 'email','password']
+
+    reg_fields = ['first_name', 'last_name', 'user_name', 'email', 'password']
 
     def post(self):
         request.get_json(force=True)
 
-        for key in self.registration_fields:
+        for key in self.reg_fields:
             if key not in request.json.keys():
-                response = jsonify({'Error': 'Missing fields: provide first name, last name, user name, email and password'})
+                response = jsonify(
+                    {'Error': 'Missing fields: provide first name, last name, user name, email and password'})
                 response.status_code = 400
                 return response
             elif not request.json[key]:
@@ -22,7 +25,6 @@ class RegistrationResource(Resource):
                 response.status_code = 400
                 return response
 
-        
         user_name = request.json['user_name'].strip()
         email = request.json['email'].strip()
         password = request.json['password'].strip()
@@ -31,7 +33,8 @@ class RegistrationResource(Resource):
         is_caterer = request.json['is_caterer']
 
         if not User.email_is_valid(email):
-            response = jsonify({'Error': 'This email is invalid. Please check again and resend'})
+            response = jsonify(
+                {'Error': 'This email is invalid. Please check again and resend'})
             response.status_code = 400
             return response
 
@@ -39,7 +42,7 @@ class RegistrationResource(Resource):
         duplicate_email = User.query.filter_by(email=email).first()
         duplicate_username = User.query.filter_by(username=user_name).first()
         if duplicate_email:
-            response = jsonify({'Error':'This email is already registered.'})
+            response = jsonify({'Error': 'This email is already registered.'})
             response.status_code = 409
             return response
 
@@ -51,16 +54,20 @@ class RegistrationResource(Resource):
         else:
             user = User(first_name=first_name,
                         last_name=last_name,
-                        username=user_name, 
+                        username=user_name,
                         email=email,
                         is_caterer=is_caterer)
             user.password = password
             user.save()
-            response = jsonify({'message': 'User of email {} has been created'.format(email)})
+            response = jsonify(
+                {'message': 'User of email {} has been created'.format(email)})
             response.status_code = 201
             return response
 
-''' This method handles user authentication and authorization ''' 
+
+''' This method handles user authentication and authorization '''
+
+
 class LoginResource(Resource):
 
     @staticmethod
@@ -76,4 +83,4 @@ class LoginResource(Resource):
         return user
 
     def post(self):
-        return redirect('/api/v1/auth/login/',code=307)
+        return redirect('/api/v1/auth/login/', code=307)

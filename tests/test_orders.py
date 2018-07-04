@@ -9,7 +9,7 @@ class OrderTestCase(BaseTest):
 
     def test_api_customer_create_order(self):
         # A customer can create an order
-        
+
         # Send a post with customer credentials
         res = self.client.post(
             '/api/v1/auth/login/',
