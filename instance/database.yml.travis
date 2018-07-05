@@ -1,0 +1,4 @@
+test:
+  adapter: postgresql
+  database: database book_a_meal_test
+  username: postgres

@@ -2,11 +2,17 @@ import datetime
 from flask import jsonify, request, abort
 from flask_restful import Resource
 from flask_jwt import JWT, jwt_required, current_identity
-from app.entities.orders import Order
+from app.models import Order, User, Meal
+from app import ma
 
-orders_list = [Order(1, 1, 1), Order(2, 2, 2), Order(3, 3, 2), Order(4, 4, 1)]
 
-order_keys = ['meal_id', 'user_id']
+class OrderSchema(ma.Schema):
+    class Meta:
+        fields = ("id", "user_id", "meal_id", "date_submitted")
+
+
+order_schema = OrderSchema()
+orders_schema = OrderSchema(many=True)
 
 ''' This Order class implements GET, PUT, DELETE methods for an Order.'''
 
@@ -17,11 +23,12 @@ class OrderResource(Resource):
     # Authorization for caterer and customer
     @jwt_required()
     def get(self, order_id):
-        for order_item in orders_list:
-            if order_item.id == order_id:
-                response = jsonify({'order': order_item.serialize()})
-                response.status_code = 200
-                return response
+        order = Order.query.get(order_id)
+        if order:
+            response = jsonify({"Order": order_schema.dump(order)})
+            response.status_code = 200
+            return response
+
         response = jsonify({'message': "No order of given id found"})
         response.status_code = 404
         return response
@@ -30,7 +37,7 @@ class OrderResource(Resource):
     # Authorization for customer only
     @jwt_required()
     def put(self, order_id):
-        if current_identity['is_caterer']:
+        if current_identity.is_caterer:
             response = jsonify(
                 {'message': 'An admin(caterer) is not allowed to update an order'})
             response.status_code = 403
@@ -38,14 +45,13 @@ class OrderResource(Resource):
 
         request.get_json(force=True)
 
-        for order_item in orders_list:
-            if order_item.id == order_id:
-                order_item.meal_id = request.json['meal_id']
-                order_item.user_id = current_identity['id']
-                order_item.edited = True
-                response = jsonify({'order': order_item.serialize()})
-                response.status_code = 202
-                return response
+        order = Order.query.get(order_id)
+        if order:
+            order.user_id = current_identity.id
+            order.save()
+            response = jsonify({'order': order_schema.dump(order)})
+            response.status_code = 202
+            return response
 
         response = jsonify({'message': 'Order does not exist'})
         response.status_code = 404
@@ -54,12 +60,12 @@ class OrderResource(Resource):
     # Delete an order
     @jwt_required()
     def delete(self, order_id):
-        for order_item in orders_list:
-            if order_item.id == order_id:
-                orders_list.remove(order_item)
-                response = jsonify({'Message': 'Order deleted'})
-                response.status_code = 202
-                return response
+        order = Order.query.get(order_id)
+        if order:
+            order.delete()
+            response = jsonify({'Message': 'Order deleted'})
+            response.status_code = 202
+            return response
 
         response = jsonify({'Message': 'Order does not exist'})
         response.status_code = 404
@@ -72,13 +78,13 @@ class OrderListResource(Resource):
     # Authorization for caterer only
     @jwt_required()
     def get(self):
-        if not current_identity['is_caterer']:
+        if not current_identity.is_caterer:
             response = jsonify(
                 {'message': 'You must be an admin to access this resource'})
             response.status_code = 403
             return response
-        response = jsonify(
-            {'orders': [order.serialize() for order in orders_list]})
+        orders = Order.query.all()
+        response = jsonify({'orders': orders_schema.dump(orders)})
         response.status_code = 200
         return response
 
@@ -86,7 +92,7 @@ class OrderListResource(Resource):
      # customer role
     @jwt_required()
     def post(self):
-        if current_identity['is_caterer']:
+        if current_identity.is_caterer:
             response = jsonify(
                 {'message': 'An admin(caterer) is not allowed to post an order'})
             response.status_code = 403
@@ -96,30 +102,23 @@ class OrderListResource(Resource):
         if not request.json:
             abort(400)
 
-        for key in request.json.keys():
-            if key not in order_keys:
-                abort(400)
+        if 'meal_id' not in request.json.keys():
+            abort(400)
 
-        order_dict = {
-            'id': orders_list[-1].id + 1,
-            'meal_id': request.json['meal_id'],
-            'user_id': current_identity['id']
-        }
-        order = Order(
-            order_dict['id'],
-            order_dict['meal_id'],
-            order_dict['user_id'])
-        orders_list.append(order)
-        response = jsonify({'order': order.serialize()})
-        response.status_code = 201
+        meal_id = request.json['meal_id']
+
+        user = User.query.get(current_identity.id)
+        meal = Meal.query.get(meal_id)
+
+        if meal:
+            order = Order(meal_id=meal.id, user_id=user.id)
+            order.save()
+
+            order = order_schema.dump(order)
+            response = jsonify({'order': order.data})
+            response.status_code = 201
+            return response
+
+        response = jsonify({'Message': "The meal order does not exist"})
+        response.status_code = 404
         return response
-
-     # Get orders by user_id
-
-    # This method returns a list of orders made by a specific user
-    def get_orders(self, user_id):
-        user_orders = []
-        for order_item in orders_list:
-            if order_item.user_id == user_id:
-                user_orders.append(user_id)
-        return user_orders
