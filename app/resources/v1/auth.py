@@ -1,14 +1,12 @@
-
-import pdb
-from flask import jsonify, request, redirect
+import datetime
+from flask import request, jsonify, redirect, url_for
+from flask_jwt import JWT, jwt_required, current_identity
 from flask_restful import Resource
-from app.models import User
-
-''' This class handles user registration '''
+from app.resources.v1.users import UserResource
 
 
 class RegistrationResource(Resource):
-
+    ''' This class handles user registration '''
     reg_fields = ['first_name', 'last_name', 'user_name', 'email', 'password']
 
     def post(self):
@@ -30,57 +28,46 @@ class RegistrationResource(Resource):
         password = request.json['password'].strip()
         first_name = request.json['first_name'].strip()
         last_name = request.json['last_name'].strip()
-        is_caterer = request.json['is_caterer']
 
-        if not User.email_is_valid(email):
+        if not UserResource.email_is_valid(email):
             response = jsonify(
                 {'Error': 'This email is invalid. Please check again and resend'})
             response.status_code = 400
             return response
 
-        # check for duplicate emails
-        duplicate_email = User.query.filter_by(email=email).first()
-        duplicate_username = User.query.filter_by(username=user_name).first()
-        if duplicate_email:
+        if UserResource.email_matches(email):
             response = jsonify({'Error': 'This email is already registered.'})
             response.status_code = 409
             return response
 
-        elif duplicate_username:
+        elif UserResource.username_matches(user_name):
             response = jsonify({'Error': 'This username is already taken.'})
             response.status_code = 409
             return response
-
         else:
-            user = User(first_name=first_name,
-                        last_name=last_name,
-                        username=user_name,
-                        email=email,
-                        is_caterer=is_caterer)
-            user.password = password
-            user.save()
+            UserResource.register(
+                first_name,
+                last_name,
+                user_name,
+                email,
+                password)
             response = jsonify(
-                {'message': 'User of email {} has been created'.format(email)})
+                {'message': 'User {} was created'.format(user_name)})
             response.status_code = 201
             return response
 
 
-''' This method handles user authentication and authorization '''
-
-
 class LoginResource(Resource):
-
+    ''' This class handles user authentication and authorization '''
     @staticmethod
     def authenticate(email, password):
-        user = User.query.filter_by(email=email).first()
-        if user and user.verify_password(password):
-            return user
+        user = UserResource.get_user(email, password)
+        return user
 
     @staticmethod
     def identity(payload):
         user_id = payload['identity']
-        user = User.query.get(user_id)
-        return user
+        return UserResource.get_user_by_id(user_id)
 
     def post(self):
         return redirect('/api/v1/auth/login/', code=307)

@@ -17,6 +17,7 @@ meals_schema = MealSchema(many=True)
 meal_schema = MealSchema()
 
 
+
 class MenuResource(Resource):
     ''' This Menu class implements GET and POST methods for a Menu. Authorization for both customer and caterer'''
 

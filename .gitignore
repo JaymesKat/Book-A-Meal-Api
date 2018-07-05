@@ -1,6 +1,7 @@
 .env
 venv/
 key.txt
+*.py.orig
 *.pyc
 *.pytest_cache
 *__pycache__/
