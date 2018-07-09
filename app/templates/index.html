@@ -1,0 +1,38 @@
+<!DOCTYPE HTML5>
+<html lang='en'>
+<head>
+	<meta name = "viewport" content = "width = device-width, initial-scale = 1.0"> 
+        <title>Book-A-Meal API Home</title>
+        <link rel="stylesheet" href="../static/css/styles.css"/> 
+        <script src="../static/js/index.js"></script>        
+    </head>
+    <body>
+         <!-- Navigation Menu -->
+         <div id="nav"> 
+            <ul>
+                <li style="float:left;"><a><b>Book-A-Meal</b></a></li>
+                <li><a href="signup.html">Sign Up</a></li>
+                <li><a href="menu.html">Menu</a></li>
+                <li><a class="active" href="index.html">Home</a></li>
+            </ul>
+        </div>
+        <div class="wrapper">
+            <div class="content">
+                
+                <div  class="formBox"> 
+                    <div class="tab">
+                        <a class="tablinks" id="defaultOpen" onclick="viewForm(event, 'home')"> Welcome to Book-A-Meal API</a>    
+                    </div>
+                    <form id="home" class="formContent">
+                         
+                        <p>Follow How-To Guide for this API <a href="https://bookamealapp.docs.apiary.io/">here </a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+        </div>
+        <script>
+                document.getElementById("defaultOpen").click();
+            </script>
+    </body>
+</html>

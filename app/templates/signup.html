@@ -1,0 +1,108 @@
+<!DOCTYPE HTML5>
+<html lang='en'>
+<head>
+	<meta name = "viewport" content = "width = device-width, initial-scale = 1.0"> 
+        <title>Customer Signup</title>
+        <link rel="stylesheet" href="../static/css/styles.css"/> 
+        <script src="../static/js/index.js"></script>    
+    </head>
+    <body>
+        <!-- Navigation Menu -->
+        <div id="nav">
+            <ul>
+                <li style="float:left;pointer-events:none;"><a><b>Book-A-Meal</b></a></li>
+                <li><a href="signin.html">Sign In</a></li>
+                <li><a href="menu.html">Menu</a></li>
+                <li><a class="active" href="index.html">Home</a></li>
+            </ul>
+        </div>
+        <div class="wrapper">
+               
+                <div class="content" id="signup">
+                    <div class="formBox"> 
+                        <div class="tab">
+                            <button class="tablinks" id="defaultOpen" onclick="viewForm(event, 'customer')">Customer</button>
+                            <button class="tablinks" onclick="viewForm(event, 'caterer')">Caterer</button>
+                        </div>
+                        <form id="customer" class="formContent" action="customer_dashboard.html">
+                            <div class="container">
+                                <h1>Customer Sign Up</h1>
+                                <p><small>Please fill in this form to create an account</small></p>
+                                <hr>
+                                <p> 
+                                    <label for="username">Username</label>
+                                    <input type="text" placeholder="Create Username" name="username" required>
+                                </p> 
+                                <p> 
+                                    <label for="email">Email</label>
+                                    <input type="email" placeholder="Enter Email" name="email" required>
+                                </p> 
+                                <p>     
+                                    <label for="psw">Password</label>
+                                    <input type="password" placeholder="Enter Password" name="psw" required>
+                                </p> 
+                                <p>     
+                                    <label for="psw-repeat">Repeat Password</label>
+                                    <input type="password" placeholder="Repeat Password" name="psw-repeat" required>
+                                </p> 
+                                <p>     
+                                    <label>
+                                    <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
+                                    </label>
+                                </p>                      
+                                <div>
+                                    <button type="button" class="cancelbtn">Cancel</button>
+                                    <button type="submit" class="signupbtn">Sign Up</button>
+                                </div>
+
+                                <p class="change_link">
+                                    Already a signed up?
+                                    <a href="index.html">Sign in</a>
+                                </p>
+                            </div>
+                        </form>
+                        <form id="caterer" class="formContent" action="caterer_dashboard.html">
+                                <div class="container">
+                                    <h1>Caterer Sign Up</h1>
+                                    <p><small>Please fill in this form to create an account</small></p>
+                                    <hr>
+                                    <p> 
+                                        <label for="username">Username</label>
+                                        <input type="text" placeholder="Create Username" name="username" required>
+                                    </p> 
+                                    <p> 
+                                        <label for="email">Email</label>
+                                        <input type="email" placeholder="Enter Email" name="email" required>
+                                    </p> 
+                                    <p>     
+                                        <label for="psw">Password</label>
+                                        <input type="password" placeholder="Enter Password" name="psw" required>
+                                    </p> 
+                                    <p>     
+                                        <label for="psw-repeat">Repeat Password</label>
+                                        <input type="password" placeholder="Repeat Password" name="psw-repeat" required>
+                                    </p> 
+                                    <p>     
+                                        <label>
+                                        <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
+                                        </label>
+                                    </p>                      
+                                    <div class="clearfix">
+                                        <button type="button" class="cancelbtn">Cancel</button>
+                                        <button type="submit" class="signupbtn">Sign Up</button>
+                                    </div>
+    
+                                    <p class="change_link">
+                                        Already a signed up?
+                                        <a href="index.html">Sign in</a>
+                                    </p>
+                                </div>
+                            </form>
+                    </div>
+                </div>
+         </div>
+         <script>
+            document.getElementById("defaultOpen").click();
+        </script>
+    </body>
+</html>

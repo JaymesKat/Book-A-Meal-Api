@@ -1,0 +1,86 @@
+<!DOCTYPE HTML5>
+<html lang='en'>
+<head>
+	<meta name = "viewport" content = "width = device-width, initial-scale = 1.0"> 
+        <title>Sign In As Customer</title>
+        <link rel="stylesheet" href="../static/css/styles.css"/> 
+        <script src="../static/js/index.js"></script>        
+    </head>
+    <body>
+         <!-- Navigation Menu -->
+         <div id="nav"> 
+            <ul>
+                <li style="float:left;"><a><b>Book-A-Meal</b></a></li>
+                <li><a href="signup.html">Sign Up</a></li>
+                <li><a href="menu.html">Menu</a></li>
+                <li><a class="active" href="index.html">Home</a></li>
+            </ul>
+        </div>
+        <div class="wrapper">
+             <div class="content" id="login">
+                    
+                    <div  class="formBox"> 
+                        <div class="tab">
+                            <button class="tablinks" id="defaultOpen" onclick="viewForm(event, 'customer')">Customer</button>
+                            <button class="tablinks" onclick="viewForm(event, 'caterer')">Caterer</button>
+                        </div>
+                        <form id="customer" class="formContent" action="customer_dashboard.html">
+                            <h1>Customer Sign in</h1> 
+                            <p><small>Fill your credentials to proceed</small></p>
+                            <hr>
+                            <div class="container">
+                                <p> 
+                                    <label for="email"> Email </label>
+                                    <input id="email" name="username" required="required" type="email" placeholder="Enter Email..."/>
+                                </p>
+                                <p> 
+                                    <label for="password"> Password </label>
+                                    <input id="password" name="password" required="required" type="password" placeholder="Enter Password..." /> 
+                                </p>
+                                <p> 
+                                    <input type="checkbox" name="keeploggedin" id="keeploggedin" value="keeploggedin" /> 
+                                    <label for="keeploggedin">Keep me logged in</label>
+                                </p>
+                                <div>
+                                    <button type="submit" class="indexbtn">Sign In</button>
+                                </div>
+                                <p class="change_link">
+                                    Not a member yet ?
+                                    <a href="signup.html">Sign up</a>
+                                </p>
+                            </div>
+                        </form>
+                        <form id="caterer" class="formContent" action="caterer_dashboard.html"> 
+                            <h1>Caterer Sign in</h1> 
+                            <p><small>Fill your credentials to proceed</small></p>
+                            <hr>
+                            <div class="container">
+                                <p> 
+                                    <label for="username"> Email </label>
+                                    <input id="username" name="username" required="required" type="text" placeholder="Enter Email..."/>
+                                </p>
+                                <p> 
+                                    <label for="password"> Password </label>
+                                    <input id="password" name="password" required="required" type="password" placeholder="Enter Password..." /> 
+                                </p>
+                                <p> 
+                                    <input type="checkbox" name="keeploggedin" id="keeploggedin" value="keeploggedin" /> 
+                                    <label for="keeploggedin">Keep me logged in</label>
+                                </p>
+                                <div class="clearfix">
+                                    <button type="submit" class="indexbtn">Sign In</button>
+                                <p class="change_link">
+                                    Not a member yet ?
+                                    <a href="signup.html">Sign up</a>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+         </div>
+         <script>
+            document.getElementById("defaultOpen").click();
+        </script>
+    </body>
+</html>

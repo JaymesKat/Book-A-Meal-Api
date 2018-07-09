@@ -1,0 +1,39 @@
+language: python
+python:
+  - "3.6"
+
+cache: pip
+
+services:
+  - postgresql
+
+git:
+  depth: false
+
+env: 
+  global:
+    - CC_TEST_REPORTER_ID=f2e5b540569f3e8c0aef58c1df479e26b89e49b051666d40454af5c79a8a10f9 
+    - GIT_COMMITTED_AT=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then git log -1 --pretty=format:%ct; else git log -1 --skip 1 --pretty=format:%ct; fi)
+
+install:
+  - pip install -r requirements.txt
+
+before_script:
+  - cp instance/database.yml.travis instance/database.yml
+  - psql -c 'create database book_a_meal_test;' -U postgres
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
+script:
+  - py.test --cov-report= --cov=app tests/
+  - coverage report
+
+# generate code climate report  
+after_script:
+  - codeclimate-test-reporter
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+
+# push report to coveralls.io
+after_success:
+  - coveralls

@@ -1,0 +1,452 @@
+FORMAT: 1A
+HOST: https://bookamealapi.herokuapp.com
+
+# Book-a-Meal API
+
+Book-A-Meal is an API built for a meal ordering application. 
+An administrator(caterer) can manage meal options and create a menu
+It enables customers to place food orders off the menu and the administrator (caterer) receive the orders.
+
+All users of the application will require token-based authentication to access the API resources
+
+# API Features
+
+Customers can;
+* Register
+* Login
+* View a daily menu of meal options
+* Place an order by selecting meal options
+
+Administrators/Caterers can;
+* Login
+* Create, retrieve, update and delete meal options 
+* Setup daily menu
+* View customer orders
+
+## User Registration [/api/v1/auth/register/]
+
+A user signs up by providing a first name, last name, user name,  email and password
+
+### Register a user [POST]
+
++ Request (application/json)
+
+            {
+                 "first_name": "Joan",
+                 "last_name": "Dinah",
+                 "user_name": "jdinah",
+                 "email": "joan@example.com",
+                 "password": "@123password"
+            }
+
++ Response 201 (application/json)
+
+            {
+                "message": "User jdinah was created"
+            }
+
+## User Authentication [/api/v1/auth/login/]
+### Login [POST]
+
+A user logs into the application by providing a correct email and password to verify identity
+Take note of the token returned on successful login, this token will be used to access resources
+Take note in the response whether the user is an admin (caterer) or not, the user will be able 
+to access different resources based on this
+
++ Request (application/json)
+
+            {
+                "email": "seryazi@gmail.com", "password": "seryazi"
+            }
+
++ Response 201 (application/json)
+
+
+    + Body
+
+            {
+                "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjcxOTQ1OTgsImlhdCI6MTUyNzE5MDk5OCwibmJmIjoxNTI3MTkwOTk4LCJpZGVudGl0eSI6NH0.Cxxu5vKCuxjs-hRml_sjjCKUS5JY0WAmH32c3TI06Cg",
+                "email": "seryazi@gmail.com",
+                "is_admin": true,
+                "message": "Successfully logged in",
+                "user_id": 4
+            }
+
+# Group Resources
+
+## Meals Resources [/api/v1/meals/]
+
+### List All Meals [GET]
+A logged-in caterer can retrieve a list of meals. 
+
++ Request (application/json)
+
+    + Headers
+        
+            Authorization: JWT Token
+
++ Response 200 (application/json)
+
+            {
+                "meals": [
+                    {
+                        "id": 1,
+                        "name": "Rice & Chicken",
+                        "price": 10.5
+                    },
+                    {
+                        "id": 2,
+                        "name": "Fries & Beef",
+                        "price": 13.5
+                    },
+                    {
+                        "id": 3,
+                        "name": "Fries & Chicken",
+                        "price": 17
+                    },
+                    {
+                        "id": 4,
+                        "name": "Potatoes & Beans",
+                        "price": 15
+                    }
+                ]
+            }
+
+
+### Add a Meal [POST]
+
+An administrator/caterer can add a new meal indicating the name and price
+
++ Request (application/json)
+
+    + Headers
+        
+            Authorization: JWT Token
+    
+    + Body
+    
+            {
+                "name": "Meatballs",
+                "price": "12"
+            }    
+    
+    
++ Response 200 (application/json)
+
+            {
+                "Meal": {
+                    "id": 4,
+                    "name": "Meatballs",
+                    "price": 12
+                },
+                "Message": "Meal added successfully"
+            }
+
+## Single Meal Resource [/api/v1/meals/<meal_id>]
+
+### Get A Single Meal By Id [GET]
+
+Retrieve a single meal with its name and price
+
++ Parameters
+        
+    + meal_id (number) - ID of desired meal
+
++ Request (application/json)
+
+    + Headers
+            
+            Authorization: JWT Token
+                
++ Response 200 (application/json)
+
+            [
+                {
+                    "Meal": [
+                        {
+                            "id": 1,
+                            "name": "Rice & Chicken",
+                            "price": 10.5
+                        }
+                    ]
+                },
+                200
+            ]
+                
+### Update a Meal [PUT]
+
+Change the details of a meal whose id matches the id in the request
+
++ Parameters
+        
+    + meal_id (number) - ID of the meal to update
+    
++ Request (application/json)
+
+    + Headers
+            
+            Authorization: JWT Token    
+    
+    + Body
+    
+            {
+                "name": "Pasta",
+                "price": 15
+            }
+
++ Response 204 (application/json)
+
+        {
+            "Meal": {
+                "id": 4,
+                "name": "Pasta",
+                "price": 15
+            }
+        }
+        
+### Delete a Meal [DELETE]
+
+Delete a single meal whose id matches the id in the request
+
++ Parameters
+        
+    + meal_id (number) - ID of the meal to delete
+    
++ Request (application/json)
+
+    + Headers
+            
+            Authorization: JWT Token   
+            
++ Response (application/json)
+            
+            [
+                {
+                    "message": "Meal deleted successfully"
+                },
+                204
+            ]
+
+# Group Menu
+
+## Menu Resource [/api/v1/menu/]
+
+### Add Meals To Menu [GET]
+
+Add a list of meals to the daily menu, the list contains ids for different lists
+
++ Request (application/json)
+
+    + Headers
+            
+            Authorization: JWT Token 
+    
+    + Body 
+    
+            {
+                "meal_ids": [1, 4, 2]
+            }
+            
++ Response (application/json)
+
+            {
+                "Menu": {
+                    "meal_ids": [
+                        1,
+                        4,
+                        2
+                    ]
+                }
+            }
+
+### List All Menu Items [GET]
+
+Retrieve current list of meals on the daily menu
+    
++ Request (application/json)
+
+    + Headers
+            
+            Authorization: JWT Token   
+            
++ Response (application/json)
+
+            {
+                "menu": [
+                    [
+                        {
+                            "id": 1,
+                            "name": "Rice & Chicken",
+                            "price": 10.5
+                        }
+                    ],
+                    [
+                        {
+                            "id": 4,
+                            "name": "Potatoes & Beans",
+                            "price": 15
+                        }
+                    ],
+                    [
+                        {
+                            "id": 2,
+                            "name": "Fries & Beef",
+                            "price": 13.5
+                        }
+                    ]
+                ]
+            }
+
+# Group Orders
+
+## Order Resources [/api/v1/orders/]
+
+### List All Orders [GET]
+
++ Request (application/json)
+
+    + Headers
+        
+            Authorization: JWT Token
+    
++ Response (application/json)   
+            
+            {
+                "orders": [
+                    {
+                        "completed": false,
+                        "date_submitted": "2018-04-24",
+                        "id": 1,
+                        "meal_id": 1,
+                        "user_id": 1
+                    },
+                    {
+                        "completed": false,
+                        "date_submitted": "2018-04-24",
+                        "id": 2,
+                        "meal_id": 2,
+                        "user_id": 2
+                    },
+                    {
+                        "completed": false,
+                        "date_submitted": "2018-04-25",
+                        "id": 3,
+                        "meal_id": 3,
+                        "user_id": 2
+                    },
+                    {
+                        "completed": true,
+                        "date_submitted": "2018-04-25",
+                        "id": 4,
+                        "meal_id": 4,
+                        "user_id": 1
+                    }
+                ]
+            }
+
+### Create An Order [POST]
+
+Creates a new order by sending the id of a desired meal from the menu 
+
++ Request (application/json)
+
+    + Headers
+        
+            Authorization: JWT Token
+    
+    + Body
+    
+            {
+                "meal_id": 5
+            }
+            
+            
++ Response (application/json)          
+            {
+                "order": {
+                    "completed": false,
+                    "date_submitted": "2018-05-25",
+                    "id": 5,
+                    "meal_id": 5,
+                    "user_id": 2
+                }
+            }
+
+
+## Single Order Resource [/api/v1/orders/<order_id>]
+
+### Get A Single Order By Id [GET]
+A logged-in customer or caterer can retrieve a particular order using its id
+
++ Parameters
+        
+    + order_id (number) - ID of desired order
+
++ Request (application/json)
+
+    + Headers
+            
+            Authorization: JWT Token
+                
++ Response 200 (application/json)
+
+            [
+                {
+                    "order": [
+                        {
+                            "completed": false,
+                            "date_submitted": "2018-04-24",
+                            "id": 1,
+                            "meal_id": 1,
+                            "user_id": 1
+                        }
+                    ]
+                }
+            ]
+
+### Update An Order [PUT]
+
+A logged-in customer can update an order of a given id
+
++ Parameters
+        
+    + order_id (number) - ID of order to update
+
++ Request (application/json)
+
+    + Headers
+            
+            Authorization: JWT Token
+        
+    + Body
+    
+            {
+              "meal_id": 5
+            }
+                
++ Response 200 (application/json)
+
+            {
+                "order": {
+                    "completed": false,
+                    "date_submitted": "2018-06-06",
+                    "id": 5,
+                    "meal_id": 5,
+                    "user_id": 1
+                }
+            }
+
+### Delete An Order [DELETE]
+
+A logged-in user can delete an order of a given id
+
++ Parameters
+        
+    + order_id (number) - ID of order to delete
+
++ Request (application/json)
+
+    + Headers
+            
+            Authorization: JWT Token
+
