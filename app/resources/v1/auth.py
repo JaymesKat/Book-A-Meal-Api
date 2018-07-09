@@ -1,5 +1,5 @@
 
-import pdb
+import re
 from flask import jsonify, request, redirect
 from flask_restful import Resource
 from app.models import User
@@ -50,7 +50,13 @@ class RegistrationResource(Resource):
             response = jsonify({'Error': 'This username is already taken.'})
             response.status_code = 409
             return response
-
+        elif is_weak_password(password):
+            response = jsonify({
+                'Error': 
+                'Enter a password that is more than 8 characters long and includes at least 1 digit and uppercase letter.'
+                })
+            response.status_code = 400
+            return response
         else:
             user = User(first_name=first_name,
                         last_name=last_name,
@@ -84,3 +90,13 @@ class LoginResource(Resource):
 
     def post(self):
         return redirect('/api/v1/auth/login/', code=307)
+
+def is_weak_password(password):
+    """ Password should have at least 8 characters, 1 upper case letter and 1 digit"""
+
+    too_short = len(password) < 8
+    missing_digit = re.search(r"\d", password) is None
+    missing_uppercase = re.search(r"[A-Z]", password) is None
+
+    response = too_short or missing_digit or missing_uppercase
+    return response
