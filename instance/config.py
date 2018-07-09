@@ -26,6 +26,7 @@ class MainConfiguration(object):
 
 
 class ProductionEnvironment(MainConfiguration):
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
     DEBUG = False
     TESTING = False
 
@@ -39,7 +40,10 @@ class TestingEnvironment(MainConfiguration):
 
 class DevelopmentEnvironment(MainConfiguration):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://{}:{}@{}/{}'.format(POSTGRES_USER,POSTGRES_PW,POSTGRES_URL,POSTGRES_DB)
+    if os.environ.get('DATABASE_URL') is None:
+        SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://{}:{}@{}/{}'.format(POSTGRES_USER,POSTGRES_PW,POSTGRES_URL,POSTGRES_DB)
+    else:
+        SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     DEBUG = True
     TESTING = True
