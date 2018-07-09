@@ -48,7 +48,8 @@ class MenuResource(Resource):
 
         menu = Menu()
         for meal_id in meal_ids:
-            menu.items.append(Meal.query.get(meal_id))
+            if Meal.query.get(meal_id):
+                menu.items.append(Meal.query.get(meal_id))
         menu.save()
 
         meal_ids = [meal.id for meal in menu.items]
