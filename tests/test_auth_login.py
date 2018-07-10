@@ -13,7 +13,7 @@ class LoginTestCase(BaseTest):
             "last_name": "Mugisha",
             "user_name": "jmugisha",
             "email": "joshua@example.com",
-            "password": "@password",
+            "password": "@123Joshuapassword",
             "is_caterer": False
         }
         res = self.client.post(
@@ -29,7 +29,7 @@ class LoginTestCase(BaseTest):
 
         res1 = self.client.post('/api/v1/auth/login/',
                                 data=json.dumps({"email": "joshua@example.com",
-                                                 "password": "@password"}),
+                                                 "password": "@123Joshuapassword"}),
                                 content_type='application/json')
         data = json.loads(res1.data.decode())
         self.assertTrue(data['message'] == 'Successfully logged in')
@@ -71,7 +71,7 @@ class LoginTestCase(BaseTest):
             '/api/v1/auth/login',
             data=json.dumps({
                             "email": "joshua@example.com",
-                            "password": "@password"
+                            "password": "@123Joshuapassword"
                             }),
             content_type='application/json')
 

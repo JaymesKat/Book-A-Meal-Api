@@ -18,7 +18,7 @@ class BaseTest(unittest.TestCase):
             "last_name": "Odur",
             "user_name": "odur",
             "email": "odur@gmail.com",
-            "password": "odur",
+            "password": "123OdurJoseph",
             "is_caterer": True
         })
 
@@ -27,26 +27,26 @@ class BaseTest(unittest.TestCase):
             "last_name": "Kayongo",
             "user_name": "kayongo",
             "email": "paulkayongo@gmail.com",
-            "password": "kayongo",
+            "password": "@123Paulkayongo",
             "is_caterer": False
         })
 
-        self.client.post('/api/v1/auth/register/',
+        res = self.client.post('/api/v1/auth/register/',
                          data=caterer_info,
                          content_type='application/json')
-
+        print(json.loads(res.data.decode()))
         self.client.post('/api/v1/auth/register/',
                          data=customer_info,
                          content_type='application/json')
 
         self.customer = json.dumps({
             'email': 'paulkayongo@gmail.com',
-            'password': 'kayongo'
+            'password': '@123Paulkayongo'
         })
 
         self.caterer = json.dumps({
             "email": "odur@gmail.com",
-            "password": "odur"
+            "password": "123OdurJoseph"
         })
 
         self.meal = json.dumps({
@@ -60,7 +60,8 @@ class BaseTest(unittest.TestCase):
             data=self.caterer,
             content_type='application/json')
         res_data = json.loads(res.data.decode())
-
+        print(
+                res_data)
         res_1 = self.client.post(
             '/api/v1/meals/',
             data=json.dumps(

@@ -12,7 +12,7 @@ class RegistrationTestCase(BaseTest):
             "last_name": "Mandela",
             "user_name": "mandela",
             "email": "mandela@example.com",
-            "password": "@password123",
+            "password": "@Password123",
             "is_caterer": False}
 
         res = self.client.post(
@@ -67,7 +67,7 @@ class RegistrationTestCase(BaseTest):
                                 "last_name": "Mugisha",
                                 "user_name": "jmugisha",
                                 "email": "joshua@example.com",
-                                "password": "@password",
+                                "password": "@123Joshuapassword",
                                 "is_caterer": False})
 
         res = self.client.post('/api/v1/auth/register/', data=test_data)
@@ -82,14 +82,14 @@ class RegistrationTestCase(BaseTest):
                                 "last_name": "Mugisha",
                                 "user_name": "jmugisha",
                                 "email": "joshua@example.com",
-                                "password": "@password",
+                                "password": "@123Joshuapassword",
                                 "is_caterer": False})
 
         test_data_1 = json.dumps({"first_name": "Josh",
                                   "last_name": "Mug",
                                   "user_name": "jmugisha",
                                   "email": "joshua1@example.com",
-                                  "password": "@password",
+                                  "password": "@123Joshuapassword",
                                   "is_caterer": False})
         res = self.client.post('/api/v1/auth/register/', data=test_data)
         res = self.client.post('/api/v1/auth/register/', data=test_data_1)

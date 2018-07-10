@@ -13,8 +13,6 @@ jwt = JWT(authentication_handler=LoginResource.authenticate,
           identity_handler=LoginResource.identity)
 
 # Define response fields for successful login
-
-
 @jwt.auth_response_handler
 def auth_response_handler(access_token, identity):
     return jsonify({
@@ -24,7 +22,6 @@ def auth_response_handler(access_token, identity):
         'user_id': identity.id,
         'is_admin': identity.is_caterer
     })
-
 
 class ApiInstance(object):
 
@@ -39,6 +36,7 @@ class ApiInstance(object):
             '/api/v1/auth/register',
             endpoint="register",
             strict_slashes=False)
+
         self.api.add_resource(
             LoginResource,
             '/api/v1/auth/login',
@@ -75,7 +73,6 @@ class ApiInstance(object):
             endpoint="menu",
             strict_slashes=False)
 
-
 def configure_extensions(app):
     """configure flask extensions
     """
@@ -83,9 +80,9 @@ def configure_extensions(app):
     db.init_app(app)
     ma.init_app(app)
 
-
 def create_app(config_name):
-    """Function definition for creating application instance
+    """
+        Function definition for creating application instance
     """
     app = Flask(__name__)
     app.config.from_object(app_config[config_name])
@@ -109,7 +106,6 @@ def create_app(config_name):
     app.app_context().push()
 
     return app
-
 
 # Create flask app instance
 app = create_app('development')

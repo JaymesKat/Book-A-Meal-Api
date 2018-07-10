@@ -71,10 +71,8 @@ class RegistrationResource(Resource):
             return response
 
 
-''' This method handles user authentication and authorization '''
-
-
 class LoginResource(Resource):
+    ''' This method handles user authentication and authorization ''' 
 
     @staticmethod
     def authenticate(email, password):
@@ -92,8 +90,10 @@ class LoginResource(Resource):
         return redirect('/api/v1/auth/login/', code=307)
 
 def is_weak_password(password):
-    """ Password should have at least 8 characters, 1 upper case letter and 1 digit"""
-
+    """ 
+    Password should have at least 8 characters, 
+    1 upper case letter and 1 digit
+    """
     too_short = len(password) < 8
     missing_digit = re.search(r"\d", password) is None
     missing_uppercase = re.search(r"[A-Z]", password) is None
