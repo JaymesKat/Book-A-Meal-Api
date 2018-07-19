@@ -4,11 +4,10 @@ from flask import jsonify, request, redirect
 from flask_restful import Resource
 from app.models import User
 
-''' This class handles user registration '''
-
 
 class RegistrationResource(Resource):
-
+    ''' This class handles user registration '''
+    
     reg_fields = ['first_name', 'last_name', 'user_name', 'email', 'password']
 
     def post(self):
