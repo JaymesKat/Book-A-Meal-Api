@@ -1,7 +1,6 @@
-import datetime
 from flask import jsonify, request, abort
 from flask_restful import Resource
-from flask_jwt import JWT, jwt_required, current_identity
+from flask_jwt import current_identity, jwt_required
 from app.models import Order, User, Meal
 from app import ma
 
@@ -38,13 +37,16 @@ class OrderResource(Resource):
     @jwt_required()
     def put(self, order_id):
         if current_identity.is_caterer:
-            abort(403, description='An admin(caterer) is not allowed to update an order')
+            abort(
+                403,
+                description='An admin(caterer) is not allowed\
+                to update an order')
 
         request.get_json(force=True)
         meal_id = request.json['meal_id']
         if not isinstance(meal_id, int):
-                abort(400, description="Invalid meal id has been entered")
-        
+            abort(400, description="Invalid meal id has been entered")
+
         order = Order.query.get(order_id)
         if order:
             order.user_id = current_identity.id
@@ -85,19 +87,27 @@ class OrderListResource(Resource):
     @jwt_required()
     def get(self):
         if not current_identity.is_caterer:
-            abort(403, description='You must be an admin to access this resource')
-            
+            abort(
+                403,
+                description='You must be an admin\
+                to access this resource')
+
         orders = Order.query.all()
         response = jsonify({'orders': orders_schema.dump(orders)})
         response.status_code = 200
         return response
 
-     # Create a new order, handles a selected meal option from the menu,
-     # customer role
     @jwt_required()
     def post(self):
+        '''
+            Create a new order, handles a selected meal option
+            from the menu, customer role
+        '''
         if current_identity.is_caterer:
-            abort(403, description='An admin(caterer) is not allowed to post an order')
+            abort(
+                403,
+                description='An admin(caterer) is not\
+                allowed to post an order')
 
         request.get_json(force=True)
         if not request.json:
@@ -108,7 +118,7 @@ class OrderListResource(Resource):
 
         meal_id = request.json['meal_id']
         if not isinstance(meal_id, int):
-                abort(400, description="Invalid meal id has been entered")
+            abort(400, description="Invalid meal id has been entered")
 
         user = User.query.get(current_identity.id)
         meal = Meal.query.get(meal_id)

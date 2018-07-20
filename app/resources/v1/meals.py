@@ -1,4 +1,3 @@
-import json
 from flask import jsonify, request, abort
 from flask_restful import Resource
 from flask_jwt import jwt_required, current_identity
@@ -15,8 +14,8 @@ class MealSchema(ma.Schema):
 meal_schema = MealSchema()
 meals_schema = MealSchema(many=True)
 
-''' 
-    This Meal class implements GET, PUT, DELETE methods for a Meal. 
+'''
+    This Meal class implements GET, PUT, DELETE methods for a Meal.
     Authorization for caterer only
 '''
 
@@ -28,7 +27,8 @@ class MealResource(Resource):
     @jwt_required()
     def get(self, meal_id):
         if not current_identity.is_caterer:
-            abort(403, description='You must be an admin to access this resource')
+            abort(403,
+                  description='You must be an admin to access this resource')
 
         meal = Meal.query.get(meal_id)
         if meal:
@@ -46,7 +46,8 @@ class MealResource(Resource):
     def put(self, meal_id):
 
         if not current_identity.is_caterer:
-            abort(403, description='You must be an admin to access this resource')
+            abort(403,
+                  description='You must be an admin to access this resource')
 
         request.get_json(force=True)
         meal = Meal.query.get(meal_id)
@@ -67,7 +68,10 @@ class MealResource(Resource):
     @jwt_required()
     def delete(self, meal_id):
         if not current_identity.is_caterer:
-            abort(403, description='You must be an admin to access this resource')
+            abort(
+                403,
+                description='You must be an admin\
+                to access this resource')
 
         meal = Meal.query.get(meal_id)
         if meal:
@@ -84,14 +88,20 @@ class MealResource(Resource):
 
 
 class MealListResource(Resource):
-    ''' This MealList class implements GET, POST methods for Meals. Authorization for caterer only'''
+    '''
+        This MealList class implements GET, POST methods for Meals.
+        Authorization for caterer only
+    '''
 
     # Get all meal options
     @jwt_required()
     def get(self):
         if not current_identity.is_caterer:
-            abort(403, description='You must be an admin to access this resource')
-            
+            abort(
+                403,
+                description='You must be an admin\
+                to access this resource')
+
         all_meals = Meal.query.all()
         meals = meals_schema.dump(all_meals)
         response = jsonify(meals)
@@ -104,12 +114,16 @@ class MealListResource(Resource):
 
         # check for access role
         if not current_identity.is_caterer:
-            abort(403, description='You must be an admin to access this resource')
+            abort(
+                403,
+                description='You must be an admin\
+                to access this resource')
 
         request.get_json(force=True)
 
         # check for missing fields
-        if not request.json or 'name' not in request.json or 'price' not in request.json:
+        if not request.json or 'name' \
+                not in request.json or 'price' not in request.json:
             response = jsonify(
                 {'Message': 'Missing fields: enter meal name and price'})
             response.status_code = 400
@@ -124,7 +138,7 @@ class MealListResource(Resource):
                 {'Message': 'Duplicate, enter a unique meal name'})
             response.status_code = 409
             return response
-        
+
         meal_dict = {
             'name': request.json['name'].strip(),
             'price': float(request.json['price'].strip())

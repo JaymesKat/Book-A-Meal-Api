@@ -1,4 +1,3 @@
-import os
 from flask import Flask, Blueprint, jsonify
 from flask_restful import Api
 from instance.config import app_config
@@ -9,12 +8,14 @@ from .resources.v1.orders import OrderResource, OrderListResource
 from .resources.v1.menu import MenuResource
 from .resources.v1.auth import RegistrationResource, LoginResource
 
+
 jwt = JWT(authentication_handler=LoginResource.authenticate,
           identity_handler=LoginResource.identity)
 
-# Define response fields for successful login
+
 @jwt.auth_response_handler
 def auth_response_handler(access_token, identity):
+    # Define response fields for successful login
     return jsonify({
         "message": "Successfully logged in",
         'email': identity.email,
@@ -22,6 +23,7 @@ def auth_response_handler(access_token, identity):
         'user_id': identity.id,
         'is_admin': identity.is_caterer
     })
+
 
 class ApiInstance(object):
 
@@ -73,12 +75,14 @@ class ApiInstance(object):
             endpoint="menu",
             strict_slashes=False)
 
+
 def configure_extensions(app):
     """configure flask extensions
     """
     jwt.init_app(app)
     db.init_app(app)
     ma.init_app(app)
+
 
 def create_app(config_name):
     """
@@ -106,6 +110,7 @@ def create_app(config_name):
     app.app_context().push()
 
     return app
+
 
 # Create flask app instance
 app = create_app('development')

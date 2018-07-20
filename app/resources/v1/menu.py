@@ -1,7 +1,7 @@
 from flask import jsonify, request, abort
-from flask_jwt import JWT, jwt_required, current_identity
+from flask_jwt import current_identity, jwt_required
 from flask_restful import Resource
-from app.resources.v1.meals import MealResource, MealListResource, MealSchema
+from app.resources.v1.meals import MealSchema
 from app.models import Menu, Meal
 from app import ma
 
@@ -17,8 +17,8 @@ meal_schema = MealSchema()
 
 
 class MenuResource(Resource):
-    ''' 
-        This Menu class implements GET and POST methods for a Menu. 
+    '''
+        This Menu class implements GET and POST methods for a Menu.
         Authorization for both customer and caterer
     '''
 
@@ -39,11 +39,14 @@ class MenuResource(Resource):
     @jwt_required()
     def post(self):
         if not current_identity.is_caterer:
-            abort(403, description="You must be an admin to access this resource")
+            abort(
+                403,
+                description="You must be an admin\
+                to access this resource")
 
         request.get_json(force=True)
         meal_ids = request.json['meal_ids']
-        
+
         menu = Menu()
         for meal_id in meal_ids:
             if not isinstance(meal_id, int):
@@ -80,12 +83,12 @@ class MenuResource(Resource):
         menu_meals = meals_schema.dump(menu.items)
 
         response = jsonify(
-                    {
-                        "Message": "Menu updated",
-                        "meals on menu": menu_meals.data,
-                        "meal_ids": meal_ids
-                    }
-                )
+            {
+                "Message": "Menu updated",
+                "meals on menu": menu_meals.data,
+                "meal_ids": meal_ids
+            }
+        )
 
         response.status_code = 201
         return response

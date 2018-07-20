@@ -13,7 +13,7 @@ class UserSchema(ma.Schema):
     user_name = fields.String(required=True)
     email = fields.Email()
     password = fields.String(required=True)
-        
+
 
 class RegistrationResource(Resource):
     ''' This class handles user registration '''
@@ -31,8 +31,9 @@ class RegistrationResource(Resource):
 
         for key in self.reg_fields:
             if key not in request.json.keys():
-                response = jsonify(
-                    {'Error': 'Missing fields: provide first name, last name, user name, email and password'})
+                response = jsonify({
+                    'Error': 'Missing fields: provide first name,\
+                    last name, user name, email and password'})
                 response.status_code = 400
                 return response
             elif not request.json[key]:
@@ -49,7 +50,8 @@ class RegistrationResource(Resource):
 
         if not User.email_is_valid(email):
             response = jsonify(
-                {'Error': 'This email is invalid. Please check again and resend'})
+                {'Error': 'This email is invalid.\
+                 Please check again and resend'})
             response.status_code = 400
             return response
 
@@ -67,9 +69,10 @@ class RegistrationResource(Resource):
             return response
         elif is_weak_password(password):
             response = jsonify({
-                'Error': 
-                'Enter a password that is more than 8 characters long and includes at least 1 digit and uppercase letter.'
-                })
+                'Error':
+                'Enter a password that is more than 8 characters \
+                long and includes at least 1 digit and uppercase letter.'
+            })
             response.status_code = 400
             return response
         else:
@@ -87,7 +90,7 @@ class RegistrationResource(Resource):
 
 
 class LoginResource(Resource):
-    ''' This method handles user authentication and authorization ''' 
+    ''' This method handles user authentication and authorization '''
 
     @staticmethod
     def authenticate(email, password):
@@ -104,9 +107,10 @@ class LoginResource(Resource):
     def post(self):
         return redirect('/api/v1/auth/login/', code=307)
 
+
 def is_weak_password(password):
-    """ 
-    Password should have at least 8 characters, 
+    """
+    Password should have at least 8 characters,
     1 upper case letter and 1 digit
     """
     too_short = len(password) < 8

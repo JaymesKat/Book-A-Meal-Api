@@ -1,3 +1,4 @@
+# flake8: noqa
 import unittest
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
@@ -11,6 +12,8 @@ migrate = Migrate(app, db)
 manager.add_command('db', MigrateCommand)
 
 ''' Define command to run all tests '''
+
+
 @manager.command
 def test():
     tests = unittest.TestLoader().discover('tests', pattern='test*.py')
@@ -19,7 +22,10 @@ def test():
         return 0
     return 1
 
+
 ''' Define command to create database'''
+
+
 @manager.command
 def resetdb():
     """Destroys and creates the database + tables."""
@@ -32,12 +38,12 @@ def resetdb():
         create_database(db_url)
 
     print('Creating tables.')
-    
+
     from app.models import User, Meal, Menu, Order
     db.create_all()
     insert_table_data(db)
     print('Book-A-Meal tables created with data!')
 
+
 if __name__ == "__main__":
     manager.run()
-
