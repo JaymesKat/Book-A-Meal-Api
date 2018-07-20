@@ -17,7 +17,10 @@ meal_schema = MealSchema()
 
 
 class MenuResource(Resource):
-    ''' This Menu class implements GET and POST methods for a Menu. Authorization for both customer and caterer'''
+    ''' 
+        This Menu class implements GET and POST methods for a Menu. 
+        Authorization for both customer and caterer
+    '''
 
     # Get menu for the day
     @jwt_required()
@@ -36,16 +39,16 @@ class MenuResource(Resource):
     @jwt_required()
     def post(self):
         if not current_identity.is_caterer:
-            response = jsonify(
-                {'message': 'You must be an admin to access this resource'})
-            response.status_code = 403
-            return response
+            abort(403, description="You must be an admin to access this resource")
 
         request.get_json(force=True)
         meal_ids = request.json['meal_ids']
-
+        
         menu = Menu()
         for meal_id in meal_ids:
+            if not isinstance(meal_id, int):
+                abort(400, description="Invalid meal id has been entered")
+
             if Meal.query.get(meal_id):
                 menu.items.append(Meal.query.get(meal_id))
         menu.save()
@@ -66,6 +69,9 @@ class MenuResource(Resource):
 
         meal_ids = request.json['meal_ids']
         for meal_id in meal_ids:
+            if not isinstance(meal_id, int):
+                abort(400, description="Invalid meal id has been entered")
+
             if Meal.query.get(meal_id):
                 menu.items.append(Meal.query.get(meal_id))
         menu.save()

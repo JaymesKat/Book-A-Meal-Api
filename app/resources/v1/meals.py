@@ -15,7 +15,10 @@ class MealSchema(ma.Schema):
 meal_schema = MealSchema()
 meals_schema = MealSchema(many=True)
 
-''' This Meal class implements GET, PUT, DELETE methods for a Meal. Authorization for caterer only'''
+''' 
+    This Meal class implements GET, PUT, DELETE methods for a Meal. 
+    Authorization for caterer only
+'''
 
 
 class MealResource(Resource):
@@ -25,10 +28,7 @@ class MealResource(Resource):
     @jwt_required()
     def get(self, meal_id):
         if not current_identity.is_caterer:
-            response = jsonify(
-                {'message': 'You must be an admin to access this resource'})
-            response.status_code = 403
-            return response
+            abort(403, description='You must be an admin to access this resource')
 
         meal = Meal.query.get(meal_id)
         if meal:
@@ -46,10 +46,7 @@ class MealResource(Resource):
     def put(self, meal_id):
 
         if not current_identity.is_caterer:
-            response = jsonify(
-                {'message': 'You must be an admin to access this resource'})
-            response.status_code = 403
-            return response
+            abort(403, description='You must be an admin to access this resource')
 
         request.get_json(force=True)
         meal = Meal.query.get(meal_id)
@@ -70,10 +67,7 @@ class MealResource(Resource):
     @jwt_required()
     def delete(self, meal_id):
         if not current_identity.is_caterer:
-            response = jsonify(
-                {'message': 'You must be an admin to access this resource'})
-            response.status_code = 403
-            return response
+            abort(403, description='You must be an admin to access this resource')
 
         meal = Meal.query.get(meal_id)
         if meal:
@@ -89,19 +83,15 @@ class MealResource(Resource):
         return response
 
 
-''' This MealList class implements GET, POST methods for Meals. Authorization for caterer only'''
-
-
 class MealListResource(Resource):
+    ''' This MealList class implements GET, POST methods for Meals. Authorization for caterer only'''
 
     # Get all meal options
     @jwt_required()
     def get(self):
         if not current_identity.is_caterer:
-            response = jsonify(
-                {'message': 'You must be an admin to access this resource'})
-            response.status_code = 403
-            return response
+            abort(403, description='You must be an admin to access this resource')
+            
         all_meals = Meal.query.all()
         meals = meals_schema.dump(all_meals)
         response = jsonify(meals)
@@ -114,10 +104,7 @@ class MealListResource(Resource):
 
         # check for access role
         if not current_identity.is_caterer:
-            response = jsonify(
-                {'message': 'You must be an admin to access this resource'})
-            response.status_code = 403
-            return response
+            abort(403, description='You must be an admin to access this resource')
 
         request.get_json(force=True)
 
@@ -137,7 +124,7 @@ class MealListResource(Resource):
                 {'Message': 'Duplicate, enter a unique meal name'})
             response.status_code = 409
             return response
-
+        
         meal_dict = {
             'name': request.json['name'].strip(),
             'price': float(request.json['price'].strip())

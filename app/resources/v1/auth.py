@@ -1,17 +1,33 @@
 
 import re
+from marshmallow import fields, ValidationError
+from app import ma
 from flask import jsonify, request, redirect
 from flask_restful import Resource
 from app.models import User
 
 
+class UserSchema(ma.Schema):
+    first_name = fields.String(required=True)
+    second_name = fields.String(required=True)
+    user_name = fields.String(required=True)
+    email = fields.Email()
+    password = fields.String(required=True)
+        
+
 class RegistrationResource(Resource):
     ''' This class handles user registration '''
-    
+
     reg_fields = ['first_name', 'last_name', 'user_name', 'email', 'password']
 
     def post(self):
-        request.get_json(force=True)
+        user_data = request.get_json(force=True)
+
+        try:
+            UserSchema().load(user_data)
+        except ValidationError as err:
+            err.messages
+            print(err.messages)
 
         for key in self.reg_fields:
             if key not in request.json.keys():

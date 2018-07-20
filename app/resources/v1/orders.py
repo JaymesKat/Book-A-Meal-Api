@@ -38,16 +38,22 @@ class OrderResource(Resource):
     @jwt_required()
     def put(self, order_id):
         if current_identity.is_caterer:
-            response = jsonify(
-                {'message': 'An admin(caterer) is not allowed to update an order'})
-            response.status_code = 403
-            return response
+            abort(403, description='An admin(caterer) is not allowed to update an order')
 
         request.get_json(force=True)
-
+        meal_id = request.json['meal_id']
+        if not isinstance(meal_id, int):
+                abort(400, description="Invalid meal id has been entered")
+        
         order = Order.query.get(order_id)
         if order:
             order.user_id = current_identity.id
+            meal = Meal.query.get(meal_id)
+
+            if not meal:
+                abort(400, description="Meal does not exist")
+
+            order.meal_id = meal.id
             order.save()
             response = jsonify({'order': order_schema.dump(order)})
             response.status_code = 202
@@ -79,10 +85,8 @@ class OrderListResource(Resource):
     @jwt_required()
     def get(self):
         if not current_identity.is_caterer:
-            response = jsonify(
-                {'message': 'You must be an admin to access this resource'})
-            response.status_code = 403
-            return response
+            abort(403, description='You must be an admin to access this resource')
+            
         orders = Order.query.all()
         response = jsonify({'orders': orders_schema.dump(orders)})
         response.status_code = 200
@@ -93,10 +97,7 @@ class OrderListResource(Resource):
     @jwt_required()
     def post(self):
         if current_identity.is_caterer:
-            response = jsonify(
-                {'message': 'An admin(caterer) is not allowed to post an order'})
-            response.status_code = 403
-            return response
+            abort(403, description='An admin(caterer) is not allowed to post an order')
 
         request.get_json(force=True)
         if not request.json:
@@ -106,6 +107,8 @@ class OrderListResource(Resource):
             abort(400)
 
         meal_id = request.json['meal_id']
+        if not isinstance(meal_id, int):
+                abort(400, description="Invalid meal id has been entered")
 
         user = User.query.get(current_identity.id)
         meal = Meal.query.get(meal_id)
