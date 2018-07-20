@@ -9,13 +9,11 @@ from app import ma
 class MenuSchema(ma.Schema):
     class Meta:
         fields = ("date_created", "items")
-    items = ma.List(ma.HyperlinkRelated('meal_detail'))
 
 
 menu_schema = MenuSchema()
 meals_schema = MealSchema(many=True)
 meal_schema = MealSchema()
-
 
 
 class MenuResource(Resource):
@@ -57,5 +55,31 @@ class MenuResource(Resource):
 
         response = jsonify(
             {"meals on menu": menu_meals.data, "meal_ids": meal_ids})
+        response.status_code = 201
+        return response
+
+    @jwt_required()
+    def put(self):
+        menu = Menu.query.order_by('date_created').first()
+
+        menu.items = []
+
+        meal_ids = request.json['meal_ids']
+        for meal_id in meal_ids:
+            if Meal.query.get(meal_id):
+                menu.items.append(Meal.query.get(meal_id))
+        menu.save()
+
+        meal_ids = [meal.id for meal in menu.items]
+        menu_meals = meals_schema.dump(menu.items)
+
+        response = jsonify(
+                    {
+                        "Message": "Menu updated",
+                        "meals on menu": menu_meals.data,
+                        "meal_ids": meal_ids
+                    }
+                )
+
         response.status_code = 201
         return response
