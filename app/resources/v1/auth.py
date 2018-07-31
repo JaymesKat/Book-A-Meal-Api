@@ -2,7 +2,7 @@
 import re
 from marshmallow import fields, ValidationError
 from app import ma
-from flask import jsonify, request, redirect
+from flask import jsonify, request, redirect, abort
 from flask_restful import Resource
 from app.models import User
 
@@ -16,30 +16,24 @@ class UserSchema(ma.Schema):
 
 
 class RegistrationResource(Resource):
-    ''' This class handles user registration '''
-
-    reg_fields = ['first_name', 'last_name', 'user_name', 'email', 'password']
+    '''
+        This class handles user registration
+    '''
 
     def post(self):
-        user_data = request.get_json(force=True)
-
-        try:
-            UserSchema().load(user_data)
-        except ValidationError as err:
-            err.messages
-            print(err.messages)
-
-        for key in self.reg_fields:
-            if key not in request.json.keys():
-                response = jsonify({
-                    'Error': 'Missing fields: provide first name,\
-                    last name, user name, email and password'})
-                response.status_code = 400
-                return response
-            elif not request.json[key]:
-                response = jsonify({'Error': 'No field should be empty'})
-                response.status_code = 400
-                return response
+        payload = request.get_json(force=True)
+        check_missing_registration_fields(payload)
+        # for key in self.reg_fields:
+        #     if key not in request.json.keys():
+        #         response = jsonify({
+        #             'Error': 'Missing fields: provide first name,\
+        #             last name, user name, email and password'})
+        #         response.status_code = 400
+        #         return response
+        #     elif not request.json[key]:
+        #         response = jsonify({'Error': 'No field should be empty'})
+        #         response.status_code = 400
+        #         return response
 
         user_name = request.json['user_name'].strip()
         email = request.json['email'].strip()
@@ -50,8 +44,7 @@ class RegistrationResource(Resource):
 
         if not User.email_is_valid(email):
             response = jsonify(
-                {'Error': 'This email is invalid.\
-                 Please check again and resend'})
+                {'Error': 'This email is invalid.'})
             response.status_code = 400
             return response
 
@@ -110,8 +103,8 @@ class LoginResource(Resource):
 
 def is_weak_password(password):
     """
-    Password should have at least 8 characters,
-    1 upper case letter and 1 digit
+        Password should have at least 8 characters,
+        1 upper case letter and 1 digit
     """
     too_short = len(password) < 8
     missing_digit = re.search(r"\d", password) is None
@@ -119,3 +112,14 @@ def is_weak_password(password):
 
     response = too_short or missing_digit or missing_uppercase
     return response
+
+
+def check_missing_registration_fields(payload):
+    reg_fields = ['first_name', 'last_name', 'user_name', 'email', 'password']
+    for key in reg_fields:
+            if key not in payload.keys():
+                abort(
+                    400,
+                    description='Missing fields')
+            elif not payload[key]:
+                abort(400, description='No field should be empty')

@@ -41,8 +41,7 @@ class MenuResource(Resource):
         if not current_identity.is_caterer:
             abort(
                 403,
-                description="You must be an admin\
-                to access this resource")
+                description="You must be an admin to access this resource")
 
         request.get_json(force=True)
         meal_ids = request.json['meal_ids']

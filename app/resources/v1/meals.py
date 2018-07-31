@@ -70,8 +70,7 @@ class MealResource(Resource):
         if not current_identity.is_caterer:
             abort(
                 403,
-                description='You must be an admin\
-                to access this resource')
+                description='You must be an admin to access this resource')
 
         meal = Meal.query.get(meal_id)
         if meal:
@@ -99,8 +98,7 @@ class MealListResource(Resource):
         if not current_identity.is_caterer:
             abort(
                 403,
-                description='You must be an admin\
-                to access this resource')
+                description='You must be an admin to access this resource')
 
         all_meals = Meal.query.all()
         meals = meals_schema.dump(all_meals)
@@ -116,8 +114,7 @@ class MealListResource(Resource):
         if not current_identity.is_caterer:
             abort(
                 403,
-                description='You must be an admin\
-                to access this resource')
+                description='You must be an admin to access this resource')
 
         request.get_json(force=True)
 

@@ -106,8 +106,7 @@ class OrderListResource(Resource):
         if current_identity.is_caterer:
             abort(
                 403,
-                description='An admin(caterer) is not\
-                allowed to post an order')
+                description='An admin(caterer) is not allowed to post an order')
 
         request.get_json(force=True)
         if not request.json:

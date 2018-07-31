@@ -31,10 +31,17 @@ class BaseTest(unittest.TestCase):
             "is_caterer": False
         })
 
+        self.test_user = {
+            "first_name": "Winnie",
+            "last_name": "Mandela",
+            "user_name": "mandela",
+            "email": "mandela@example.com",
+            "password": "@Password123",
+            "is_caterer": False}
+
         res = self.client.post('/api/v1/auth/register/',
-                         data=caterer_info,
-                         content_type='application/json')
-        print(json.loads(res.data.decode()))
+                               data=caterer_info,
+                               content_type='application/json')     
         self.client.post('/api/v1/auth/register/',
                          data=customer_info,
                          content_type='application/json')
@@ -54,6 +61,21 @@ class BaseTest(unittest.TestCase):
             "price": "10.5"
         })
 
+        # Login a caterer and customer
+        res = self.client.post(
+            '/api/v1/auth/login/',
+            data=self.caterer,
+            content_type='application/json')
+        res_data = json.loads(res.data.decode())
+        self.caterer_token = res_data['access_token']
+
+        res1 = self.client.post(
+            '/api/v1/auth/login/',
+            data=self.customer,
+            content_type='application/json')
+        res_data = json.loads(res1.data.decode())
+        self.customer_token = res_data['access_token']
+        
         # Add meals for creating menu
         res = self.client.post(
             '/api/v1/auth/login/',
@@ -61,7 +83,7 @@ class BaseTest(unittest.TestCase):
             content_type='application/json')
         res_data = json.loads(res.data.decode())
         print(
-                res_data)
+            res_data)
         res_1 = self.client.post(
             '/api/v1/meals/',
             data=json.dumps(

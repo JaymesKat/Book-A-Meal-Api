@@ -10,24 +10,13 @@ class OrderTestCase(BaseTest):
     def test_api_customer_create_order(self):
         # A customer can create an order
 
-        # Send a post with customer credentials
-        res = self.client.post(
-            '/api/v1/auth/login/',
-            data=self.customer,
-            content_type='application/json')
-        res_data = json.loads(res.data.decode())
-        self.assertTrue(res_data['message'] == 'Successfully logged in')
-        self.assertTrue(res_data['access_token'])
-
-        self.assertEqual(res.status_code, 200)
-
         res = self.client.post(
             '/api/v1/orders/',
             data=self.order,
             content_type='application/json',
             headers=dict(
                 Authorization='JWT ' +
-                res_data['access_token']))
+                self.customer_token))
 
         self.assertEqual(res.status_code, 201)
         res_data = json.loads(res.data.decode())
@@ -38,16 +27,6 @@ class OrderTestCase(BaseTest):
     def test_api_caterer_should_not_create_order(self):
         # A customer can create an order
 
-        # Send a post with customer credentials
-        res = self.client.post(
-            '/api/v1/auth/login/',
-            data=self.caterer,
-            content_type='application/json')
-        res_data = json.loads(res.data.decode())
-        self.assertTrue(res_data['message'] == 'Successfully logged in')
-        self.assertTrue(res_data['access_token'])
-        self.assertEqual(res.status_code, 200)
-
         second_res = self.client.post(
             '/api/v1/orders/',
             data=json.dumps(
@@ -55,7 +34,7 @@ class OrderTestCase(BaseTest):
             content_type='application/json',
             headers=dict(
                 Authorization='JWT ' +
-                res_data['access_token']))
+                self.caterer_token))
         self.assertEqual(second_res.status_code, 403)
         self.assertIn(
             'An admin(caterer) is not allowed to post an order', str(
@@ -64,15 +43,7 @@ class OrderTestCase(BaseTest):
     def test_api_customer_should_not_get_orders(self):
         # Test API can get an order with GET request
 
-        res = self.client.post(
-            '/api/v1/auth/login/',
-            data=self.customer,
-            content_type='application/json')
-        res_data = json.loads(res.data.decode())
-        self.assertTrue(res_data['message'] == 'Successfully logged in')
-        self.assertTrue(res_data['access_token'])
-
-        second_res = self.client.post(
+        response = self.client.post(
             '/api/v1/meals/',
             data=json.dumps(
                 {
@@ -81,22 +52,14 @@ class OrderTestCase(BaseTest):
             content_type='application/json',
             headers=dict(
                 Authorization='JWT ' +
-                res_data['access_token']))
-        self.assertEqual(second_res.status_code, 403)
+                self.customer_token))
+        self.assertEqual(response.status_code, 403)
         self.assertIn(
             'You must be an admin to access this resource', str(
-                second_res.data))
+                response.data))
 
     def test_api_customer_update_order(self):
         # Test API can edit an existing order with PUT request
-
-        res = self.client.post(
-            '/api/v1/auth/login/',
-            data=self.customer,
-            content_type='application/json')
-        res_data = json.loads(res.data.decode())
-        self.assertTrue(res_data['message'] == 'Successfully logged in')
-        self.assertTrue(res_data['access_token'])
 
         res = self.client.post(
             '/api/v1/orders/',
@@ -104,7 +67,7 @@ class OrderTestCase(BaseTest):
             content_type='application/json',
             headers=dict(
                 Authorization='JWT ' +
-                res_data['access_token']))
+                self.customer_token))
 
         self.assertEqual(res.status_code, 201)
         data = json.loads(res.data.decode())
@@ -113,9 +76,11 @@ class OrderTestCase(BaseTest):
         menu_list = json.loads(self.menu_list)
 
         rs = self.client.put('/api/v1/orders/' + str(new_order_id),
-                             data=json.dumps({'meal_id': menu_list["meal_ids"][2]}),
+                             data=json.dumps(
+                                 {'meal_id': menu_list["meal_ids"][2]}),
                              content_type='application/json',
-                             headers=dict(Authorization='JWT ' + res_data['access_token']))
+                             headers=dict(
+                                 Authorization='JWT ' + self.customer_token))
 
         self.assertEqual(rs.status_code, 202)
 
@@ -125,7 +90,7 @@ class OrderTestCase(BaseTest):
             content_type='application/json',
             headers=dict(
                 Authorization='JWT ' +
-                res_data['access_token']))
+                self.caterer_token))
 
         self.assertIn(str(new_order_id), str(results.data))
 
@@ -133,21 +98,12 @@ class OrderTestCase(BaseTest):
         '''Test API can delete an existing order with DELETE request'''
 
         res = self.client.post(
-            '/api/v1/auth/login/',
-            data=self.customer,
-            content_type='application/json')
-
-        res_data = json.loads(res.data.decode())
-        self.assertTrue(res_data['message'] == 'Successfully logged in')
-        self.assertTrue(res_data['access_token'])
-
-        res = self.client.post(
             '/api/v1/orders/',
             data=self.order,
             content_type='application/json',
             headers=dict(
                 Authorization='JWT ' +
-                res_data['access_token']))
+                self.customer_token))
 
         self.assertEqual(res.status_code, 201)
         response_data = json.loads(res.data.decode())
@@ -159,7 +115,7 @@ class OrderTestCase(BaseTest):
             content_type='application/json',
             headers=dict(
                 Authorization='JWT ' +
-                res_data['access_token']))
+                self.customer_token))
 
         self.assertEqual(res.status_code, 202)
 
@@ -169,7 +125,7 @@ class OrderTestCase(BaseTest):
             content_type='application/json',
             headers=dict(
                 Authorization='JWT ' +
-                res_data['access_token']))
+                self.caterer_token))
 
         self.assertEqual(result.status_code, 404)
 
