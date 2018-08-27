@@ -1,4 +1,5 @@
-from flask import Flask, Blueprint, jsonify
+from flask import Flask, Blueprint, jsonify, request
+from flask_cors import CORS
 from flask_restful import Api
 from instance.config import app_config
 from .extensions import db, ma
@@ -16,13 +17,19 @@ jwt = JWT(authentication_handler=LoginResource.authenticate,
 @jwt.auth_response_handler
 def auth_response_handler(access_token, identity):
     # Define response fields for successful login
-    return jsonify({
+    resp = jsonify({
         "message": "Successfully logged in",
         'email': identity.email,
         'access_token': access_token.decode('utf-8'),
         'user_id': identity.id,
         'is_admin': identity.is_caterer
     })
+    resp.headers['Access-Control-Allow-Origin'] = request.headers.get('Origin','*')
+    resp.headers['Access-Control-Allow-Credentials'] = 'true'
+    resp.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS, GET'
+    resp.headers['Access-Control-Allow-Headers'] = request.headers.get(
+            'Access-Control-Request-Headers', 'Authorization')
+    return resp
 
 
 class ApiInstance(object):
@@ -105,9 +112,29 @@ def create_app(config_name):
     app.register_blueprint(api_bp)
 
     configure_extensions(app)
+    
+    CORS(app,
+         resources={r"/api/*": {"origins": "*"}},
+         allow_headers=["Content-Type",
+                        "Authorization",
+                        "Access-Control-Allow-Credentials"],
+         supports_credentials=True)
 
     # Push application context
     app.app_context().push()
+
+    @app.after_request
+    def add_cors(resp):
+        """
+        Ensure all responses have the CORS headers.
+        This ensures any failures are also accessible by the client.
+        """
+        resp.headers['Access-Control-Allow-Origin'] = request.headers.get('Origin','*')
+        resp.headers['Access-Control-Allow-Credentials'] = 'true'
+        resp.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS, GET'
+        resp.headers['Access-Control-Allow-Headers'] = request.headers.get(
+            'Access-Control-Request-Headers', 'Authorization')
+        return resp
 
     return app
 

@@ -3,11 +3,15 @@ from flask_restful import Resource
 from flask_jwt import current_identity, jwt_required
 from app.models import Order, User, Meal
 from app import ma
-
+from meals import MealSchema
+from auth import UserSchema
 
 class OrderSchema(ma.Schema):
+
+    meal = ma.Nested(MealSchema)
+    user = ma.Nested(UserSchema)
     class Meta:
-        fields = ("id", "user_id", "meal_id", "date_submitted")
+        fields = ("id", "user", "meal", "date_submitted")
 
 
 order_schema = OrderSchema()
@@ -87,10 +91,10 @@ class OrderListResource(Resource):
     @jwt_required()
     def get(self):
         if not current_identity.is_caterer:
-            abort(
-                403,
-                description='You must be an admin\
-                to access this resource')
+            orders = Order.query.filter_by(user_id=current_identity.id)
+            response = jsonify({'orders': orders_schema.dump(orders)})
+            response.status_code = 200
+            return response
 
         orders = Order.query.all()
         response = jsonify({'orders': orders_schema.dump(orders)})

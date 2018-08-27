@@ -1,6 +1,6 @@
 
 import re
-from marshmallow import fields, ValidationError
+from marshmallow import fields
 from app import ma
 from flask import jsonify, request, redirect, abort
 from flask_restful import Resource
@@ -8,13 +8,16 @@ from app.models import User
 
 
 class UserSchema(ma.Schema):
-    first_name = fields.String(required=True)
-    second_name = fields.String(required=True)
-    user_name = fields.String(required=True)
+    first_name = fields.String(required=True, dump_to='firstName')
+    last_name = fields.String(required=True, dump_to='lastName')
+    user_name = fields.String(required=True, dump_to='userName')
     email = fields.Email()
     password = fields.String(required=True)
-
-
+    
+    class Meta:
+        fields = ('id', 'first_name', 'last_name')
+    
+    
 class RegistrationResource(Resource):
     '''
         This class handles user registration
@@ -23,17 +26,6 @@ class RegistrationResource(Resource):
     def post(self):
         payload = request.get_json(force=True)
         check_missing_registration_fields(payload)
-        # for key in self.reg_fields:
-        #     if key not in request.json.keys():
-        #         response = jsonify({
-        #             'Error': 'Missing fields: provide first name,\
-        #             last name, user name, email and password'})
-        #         response.status_code = 400
-        #         return response
-        #     elif not request.json[key]:
-        #         response = jsonify({'Error': 'No field should be empty'})
-        #         response.status_code = 400
-        #         return response
 
         user_name = request.json['user_name'].strip()
         email = request.json['email'].strip()

@@ -22,7 +22,8 @@ class OrderTestCase(BaseTest):
         res_data = json.loads(res.data.decode())
 
         order = json.loads(self.order)
-        self.assertIn(str(order["meal_id"]), str(res_data['order']['meal_id']))
+        self.assertIn(str(order["meal_id"]),
+                      str(res_data['order']['meal']['id']))
 
     def test_api_caterer_should_not_create_order(self):
         # A customer can create an order

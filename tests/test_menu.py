@@ -22,7 +22,7 @@ class MenuTestCase(BaseTest):
         meal_ids = json.loads(self.menu_list)["meal_ids"]
 
         # Check if meal ids on created menu match with posted ids
-        self.assertEquals(meal_ids, menu["meal_ids"])
+        self.assertEquals(meal_ids, menu["mealIds"])
 
     def test_api_customer_should_not_setup_menu(self):
         """ Test API endpoint can create a meal option """

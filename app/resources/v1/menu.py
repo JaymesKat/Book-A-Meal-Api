@@ -25,13 +25,13 @@ class MenuResource(Resource):
     # Get menu for the day
     @jwt_required()
     def get(self):
-        menu = Menu.query.order_by('date_created').first()
+        menu = Menu.query.order_by('date_created desc').first()
 
         meal_ids = [meal.id for meal in menu.items]
         menu_meals = meals_schema.dump(menu.items)
 
         response = jsonify(
-            {"meals on menu": menu_meals.data, "meal_ids": meal_ids})
+            {"mealList": menu_meals.data, "mealIds": meal_ids})
         response.status_code = 200
         return response
 
@@ -59,7 +59,7 @@ class MenuResource(Resource):
         menu_meals = meals_schema.dump(menu.items)
 
         response = jsonify(
-            {"meals on menu": menu_meals.data, "meal_ids": meal_ids})
+            {"mealList": menu_meals.data, "mealIds": meal_ids})
         response.status_code = 201
         return response
 
@@ -84,8 +84,8 @@ class MenuResource(Resource):
         response = jsonify(
             {
                 "Message": "Menu updated",
-                "meals on menu": menu_meals.data,
-                "meal_ids": meal_ids
+                "mealList": menu_meals.data,
+                "mealIds": meal_ids
             }
         )
 

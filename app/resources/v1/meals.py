@@ -6,8 +6,8 @@ from app import ma
 
 
 class MealSchema(ma.Schema):
+    
     class Meta:
-        # model = Meal
         fields = ('name', 'price', 'id')
 
 

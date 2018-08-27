@@ -20,7 +20,7 @@ class MainConfiguration(object):
     WTF_CSRF_ENABLED = True
     SECRET_KEY = os.environ.get("SECRET_KEY") or 'IbZM55FJyk'
     JWT_AUTH_URL_RULE = '/api/v1/auth/login/'
-    JWT_AUTH_USERNAME_KEY = os.environ.get('JWT_AUTH_USERNAME_KEY') or 'email'
+    JWT_AUTH_USERNAME_KEY = os.environ.get('JWT_AUTH_USERNAME_KEY', 'email')
     JWT_EXPIRATION_DELTA = datetime.timedelta(seconds=3600)
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))  
 
