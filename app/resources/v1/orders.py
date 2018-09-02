@@ -1,15 +1,17 @@
 from flask import jsonify, request, abort
 from flask_restful import Resource
 from flask_jwt import current_identity, jwt_required
-from app.models import Order, User, Meal
+from app.models import Order, User, Meal, Day
 from app import ma
-from meals import MealSchema
-from auth import UserSchema
+from app.resources.v1.meals import MealSchema
+from app.resources.v1.auth import UserSchema
+
 
 class OrderSchema(ma.Schema):
 
     meal = ma.Nested(MealSchema)
     user = ma.Nested(UserSchema)
+
     class Meta:
         fields = ("id", "user", "meal", "date_submitted")
 
@@ -28,7 +30,7 @@ class OrderResource(Resource):
     def get(self, order_id):
         order = Order.query.get(order_id)
         if order:
-            response = jsonify({"Order": order_schema.dump(order)})
+            response = jsonify(order_schema.dump(order).data)
             response.status_code = 200
             return response
 
@@ -61,7 +63,7 @@ class OrderResource(Resource):
 
             order.meal_id = meal.id
             order.save()
-            response = jsonify({'order': order_schema.dump(order)})
+            response = jsonify(order_schema.dump(order).data)
             response.status_code = 202
             return response
 
@@ -92,12 +94,12 @@ class OrderListResource(Resource):
     def get(self):
         if not current_identity.is_caterer:
             orders = Order.query.filter_by(user_id=current_identity.id)
-            response = jsonify({'orders': orders_schema.dump(orders)})
+            response = jsonify(orders_schema.dump(orders).data)
             response.status_code = 200
             return response
 
         orders = Order.query.all()
-        response = jsonify({'orders': orders_schema.dump(orders)})
+        response = jsonify(orders_schema.dump(orders).data)
         response.status_code = 200
         return response
 
@@ -129,9 +131,8 @@ class OrderListResource(Resource):
         if meal:
             order = Order(meal_id=meal.id, user_id=user.id)
             order.save()
-
-            order = order_schema.dump(order)
-            response = jsonify({'order': order.data})
+            
+            response = jsonify(order_schema.dump(order).data)
             response.status_code = 201
             return response
 

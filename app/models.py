@@ -1,7 +1,10 @@
 import datetime
+import calendar
 from werkzeug.security import generate_password_hash, check_password_hash
 from validate_email import validate_email
 from . import db
+
+my_date = datetime.datetime.today()
 
 
 class BaseModel(db.Model):
@@ -86,15 +89,23 @@ class Meal(BaseModel):
         self.price = price
 
 
+class Day(BaseModel):
+    __tablename__ = "days"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String,
+                     default=calendar.day_name[my_date.weekday()],
+                     nullable=False)
+
+
 class Menu(BaseModel):
     __tablename__ = "menu"
     id = db.Column(db.Integer, primary_key=True)
     date_created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    day_id = db.Column(db.Integer, db.ForeignKey('days.id'),
+                       default=my_date.weekday()+1,
+                       nullable=True)
     items = db.relationship('Meal', secondary=menu_items, lazy='subquery',
                             backref=db.backref('menu', lazy=True))
-
-    def __repr__(self):
-        return '<Menu created: %r>' % self.items
 
 
 class Order(BaseModel):

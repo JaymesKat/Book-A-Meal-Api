@@ -6,7 +6,7 @@ from .extensions import db, ma
 from flask_jwt import JWT
 from .resources.v1.meals import MealResource, MealListResource
 from .resources.v1.orders import OrderResource, OrderListResource
-from .resources.v1.menu import MenuResource
+from .resources.v1.menu import MenuResource, MenuSingleResource
 from .resources.v1.auth import RegistrationResource, LoginResource
 
 
@@ -15,18 +15,19 @@ jwt = JWT(authentication_handler=LoginResource.authenticate,
 
 
 @jwt.auth_response_handler
-def auth_response_handler(access_token, identity):
+def auth_response_handler(token, identity):
     # Define response fields for successful login
     resp = jsonify({
         "message": "Successfully logged in",
         'email': identity.email,
-        'access_token': access_token.decode('utf-8'),
-        'user_id': identity.id,
-        'is_admin': identity.is_caterer
+        'token': token.decode('utf-8'),
+        'userId': identity.id,
+        'isAdmin': identity.is_caterer,
+        'firstName': identity.first_name
     })
     resp.headers['Access-Control-Allow-Origin'] = request.headers.get('Origin','*')
     resp.headers['Access-Control-Allow-Credentials'] = 'true'
-    resp.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS, GET'
+    resp.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS, GET, PUT, DELETE'
     resp.headers['Access-Control-Allow-Headers'] = request.headers.get(
             'Access-Control-Request-Headers', 'Authorization')
     return resp
@@ -81,6 +82,12 @@ class ApiInstance(object):
             '/api/v1/menu',
             endpoint="menu",
             strict_slashes=False)
+        
+        self.api.add_resource(
+            MenuSingleResource,
+            '/api/v1/menu/<int:day_id>',
+            '/api/v1/menu/<int:day_id>',
+            strict_slashes=False)
 
 
 def configure_extensions(app):
@@ -131,7 +138,7 @@ def create_app(config_name):
         """
         resp.headers['Access-Control-Allow-Origin'] = request.headers.get('Origin','*')
         resp.headers['Access-Control-Allow-Credentials'] = 'true'
-        resp.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS, GET'
+        resp.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS, GET, PUT, DELETE'
         resp.headers['Access-Control-Allow-Headers'] = request.headers.get(
             'Access-Control-Request-Headers', 'Authorization')
         return resp

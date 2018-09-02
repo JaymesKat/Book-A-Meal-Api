@@ -2,6 +2,7 @@ import unittest
 import json
 from app.__init__ import app
 from app import create_app, db
+from app.models import Day
 
 
 class BaseTest(unittest.TestCase):
@@ -12,6 +13,9 @@ class BaseTest(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
+        day1 = Day(name="Monday")
+        db.session.add(day1)
+        db.session.commit()
 
         caterer_info = json.dumps({
             "first_name": "Joseph",
@@ -67,14 +71,14 @@ class BaseTest(unittest.TestCase):
             data=self.caterer,
             content_type='application/json')
         res_data = json.loads(res.data.decode())
-        self.caterer_token = res_data['access_token']
+        self.caterer_token = res_data['token']
 
         res1 = self.client.post(
             '/api/v1/auth/login/',
             data=self.customer,
             content_type='application/json')
         res_data = json.loads(res1.data.decode())
-        self.customer_token = res_data['access_token']
+        self.customer_token = res_data['token']
         
         # Add meals for creating menu
         res = self.client.post(
@@ -93,7 +97,7 @@ class BaseTest(unittest.TestCase):
             content_type='application/json',
             headers=dict(
                 Authorization='JWT ' +
-                res_data['access_token']))
+                res_data['token']))
 
         response_data = json.loads(res_1.data.decode())
         meal_id_1 = response_data['Meal']['id']
@@ -107,7 +111,7 @@ class BaseTest(unittest.TestCase):
             content_type='application/json',
             headers=dict(
                 Authorization='JWT ' +
-                res_data['access_token']))
+                res_data['token']))
 
         response_data = json.loads(res_2.data.decode())
         meal_id_2 = int(response_data['Meal']['id'])
@@ -121,7 +125,7 @@ class BaseTest(unittest.TestCase):
             content_type='application/json',
             headers=dict(
                 Authorization='JWT ' +
-                res_data['access_token']))
+                res_data['token']))
 
         response_data = json.loads(res_3.data.decode())
         meal_id_3 = int(response_data['Meal']['id'])
@@ -135,14 +139,17 @@ class BaseTest(unittest.TestCase):
             content_type='application/json',
             headers=dict(
                 Authorization='JWT ' +
-                res_data['access_token']))
+                res_data['token']))
 
         response_data = json.loads(res_4.data.decode())
         meal_id_4 = int(response_data['Meal']['id'])
 
         # Add items to the menu
         self.menu_list = json.dumps(
-            {"meal_ids": [meal_id_1, meal_id_2, meal_id_3, meal_id_4]})
+            {
+                "day": 1, 
+                "meal_ids": [meal_id_1, meal_id_2, meal_id_3, meal_id_4]
+            })
 
         self.order = json.dumps({
             'meal_id': meal_id_1

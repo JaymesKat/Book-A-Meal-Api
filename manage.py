@@ -39,7 +39,7 @@ def resetdb():
 
     print('Creating tables.')
 
-    from app.models import User, Meal, Menu, Order
+    from app.models import User, Meal, Menu, Order, Day
     db.create_all()
     insert_table_data(db)
     print('Book-A-Meal tables created with data!')

@@ -33,7 +33,7 @@ class MealResource(Resource):
         meal = Meal.query.get(meal_id)
         if meal:
             meal_result = meal_schema.dump(meal)
-            response = jsonify({"Meal": meal_result.data})
+            response = jsonify(meal_result.data)
             response.status_code = 200
             return response
         else:
@@ -56,7 +56,7 @@ class MealResource(Resource):
             meal.price = request.json['price']
             meal.save()
 
-            response = jsonify({'Meal updated': meal_schema.dump(meal).data})
+            response = jsonify(meal_schema.dump(meal).data)
             response.status_code = 200
             return response
 
@@ -102,7 +102,7 @@ class MealListResource(Resource):
 
         all_meals = Meal.query.all()
         meals = meals_schema.dump(all_meals)
-        response = jsonify(meals)
+        response = jsonify(meals.data)
         response.status_code = 200
         return response
 

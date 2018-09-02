@@ -22,7 +22,7 @@ class LoginTestCase(BaseTest):
                                content_type='application/json')
         data = json.loads(res.data.decode())
         self.assertTrue(data['message'] == 'Successfully logged in')
-        self.assertTrue(data['access_token'])
+        self.assertTrue(data['token'])
         self.assertEqual(res.status_code, 200)
 
     def test_user_logging_in_with_missing_credentials(self):
