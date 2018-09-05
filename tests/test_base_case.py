@@ -72,6 +72,7 @@ class BaseTest(unittest.TestCase):
             content_type='application/json')
         res_data = json.loads(res.data.decode())
         self.caterer_token = res_data['token']
+        self.caterer_id = res_data['userId']
 
         res1 = self.client.post(
             '/api/v1/auth/login/',
@@ -86,8 +87,7 @@ class BaseTest(unittest.TestCase):
             data=self.caterer,
             content_type='application/json')
         res_data = json.loads(res.data.decode())
-        print(
-            res_data)
+        
         res_1 = self.client.post(
             '/api/v1/meals/',
             data=json.dumps(
@@ -147,11 +147,12 @@ class BaseTest(unittest.TestCase):
         # Add items to the menu
         self.menu_list = json.dumps(
             {
-                "day": 1, 
+                "day": 1,
                 "meal_ids": [meal_id_1, meal_id_2, meal_id_3, meal_id_4]
             })
 
         self.order = json.dumps({
+            'caterer_id': self.caterer_id,
             'meal_id': meal_id_1
         })
 

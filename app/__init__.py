@@ -122,6 +122,7 @@ def create_app(config_name):
     
     CORS(app,
          resources={r"/api/*": {"origins": "*"}},
+         methods='GET, POST, PUT, DELETE, OPTIONS',
          allow_headers=["Content-Type",
                         "Authorization",
                         "Access-Control-Allow-Credentials"],

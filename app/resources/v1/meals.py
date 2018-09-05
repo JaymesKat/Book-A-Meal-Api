@@ -8,7 +8,7 @@ from app import ma
 class MealSchema(ma.Schema):
     
     class Meta:
-        fields = ('name', 'price', 'id')
+        fields = ('name', 'price', 'id', 'caterer_id')
 
 
 meal_schema = MealSchema()
@@ -30,7 +30,10 @@ class MealResource(Resource):
             abort(403,
                   description='You must be an admin to access this resource')
 
-        meal = Meal.query.get(meal_id)
+        meal = Meal.query.filter_by(
+            id=meal_id,
+            caterer_id=current_identity.id).first()
+            
         if meal:
             meal_result = meal_schema.dump(meal)
             response = jsonify(meal_result.data)
@@ -50,7 +53,10 @@ class MealResource(Resource):
                   description='You must be an admin to access this resource')
 
         request.get_json(force=True)
-        meal = Meal.query.get(meal_id)
+        meal = Meal.query.filter_by(
+            id=meal_id,
+            caterer_id=current_identity.id).first()
+
         if meal:
             meal.name = request.json['name']
             meal.price = request.json['price']
@@ -71,8 +77,8 @@ class MealResource(Resource):
             abort(
                 403,
                 description='You must be an admin to access this resource')
-
-        meal = Meal.query.get(meal_id)
+        meal = Meal.query.filter_by(
+                id=meal_id).first()
         if meal:
             meal.delete()
             response = jsonify(
@@ -100,7 +106,8 @@ class MealListResource(Resource):
                 403,
                 description='You must be an admin to access this resource')
 
-        all_meals = Meal.query.all()
+        all_meals = Meal.query.filter_by(
+            caterer_id=current_identity.id).all()
         meals = meals_schema.dump(all_meals)
         response = jsonify(meals.data)
         response.status_code = 200
@@ -138,10 +145,15 @@ class MealListResource(Resource):
 
         meal_dict = {
             'name': request.json['name'].strip(),
-            'price': float(request.json['price'].strip())
+            'price': float(request.json['price'].strip()),
+            'caterer_id': current_identity.id
         }
 
-        meal = Meal(meal_dict['name'], meal_dict['price'])
+        meal = Meal(
+            name=meal_dict['name'],
+            price=meal_dict['price'],
+            caterer_id=meal_dict['caterer_id'])
+
         meal.save()
         response = jsonify({'Meal': meal_schema.dump(
             meal).data, 'Message': 'Meal added successfully'})

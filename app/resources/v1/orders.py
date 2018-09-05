@@ -10,10 +10,11 @@ from app.resources.v1.auth import UserSchema
 class OrderSchema(ma.Schema):
 
     meal = ma.Nested(MealSchema)
-    user = ma.Nested(UserSchema)
+    customer = ma.Nested(UserSchema)
+    caterer = ma.Nested(UserSchema)
 
     class Meta:
-        fields = ("id", "user", "meal", "date_submitted")
+        fields = ("id", "customer", "meal", "date_submitted", "caterer")
 
 
 order_schema = OrderSchema()
@@ -28,7 +29,9 @@ class OrderResource(Resource):
     # Authorization for caterer and customer
     @jwt_required()
     def get(self, order_id):
-        order = Order.query.get(order_id)
+        order = Order.query.filter_by(
+            id=order_id,
+            caterer_id=current_identity.id).first()
         if order:
             response = jsonify(order_schema.dump(order).data)
             response.status_code = 200
@@ -98,7 +101,7 @@ class OrderListResource(Resource):
             response.status_code = 200
             return response
 
-        orders = Order.query.all()
+        orders = Order.query.filter_by(caterer_id=current_identity.id).all()
         response = jsonify(orders_schema.dump(orders).data)
         response.status_code = 200
         return response
@@ -121,7 +124,11 @@ class OrderListResource(Resource):
         if 'meal_id' not in request.json.keys():
             abort(400)
 
+        if 'caterer_id' not in request.json.keys():
+            abort(400)
+
         meal_id = request.json['meal_id']
+        caterer_id = request.json['caterer_id']
         if not isinstance(meal_id, int):
             abort(400, description="Invalid meal id has been entered")
 
@@ -129,7 +136,9 @@ class OrderListResource(Resource):
         meal = Meal.query.get(meal_id)
 
         if meal:
-            order = Order(meal_id=meal.id, user_id=user.id)
+            order = Order(meal_id=meal.id,
+                          user_id=user.id,
+                          caterer_id=caterer_id)
             order.save()
             
             response = jsonify(order_schema.dump(order).data)

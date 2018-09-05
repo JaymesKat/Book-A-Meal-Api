@@ -33,18 +33,38 @@ def insert_table_data(db):
         is_caterer=True)
     admin2.password = 'seryazi'
 
-    meal1 = Meal(name="Rice & Chicken", price=10.5)
-    meal2 = Meal(name="Posho & Beans", price=9.0)
-    meal3 = Meal(name="Potatoes & Meat", price=12)
-    meal4 = Meal(name="Spaghetti", price=11)
-    menu = Menu()
-    menu.items.append(meal1)
-    menu.items.append(meal2)
-    menu.items.append(meal3)
-    menu.items.append(meal4)
+    db.session.add(customer1)
+    db.session.add(customer2)
+    db.session.add(admin1)
+    db.session.add(admin2)
+    db.session.commit()
 
-    order1 = Order(meal=meal1, user=customer1)
-    order2 = Order(meal=meal3, user=customer2)
+    meal1 = Meal(name="Chicken Tandoori", price=18.5, caterer=admin1)
+    meal2 = Meal(name="Fish Tikka", price=11.0, caterer=admin1)
+    meal3 = Meal(name="Butter Chicken", price=17, caterer=admin1)
+    meal4 = Meal(name="Biryani Rice", price=19, caterer=admin1)
+
+    meal11 = Meal(name="Rice & Chicken", price=10.5, caterer=admin2)
+    meal22 = Meal(name="Posho & Beans", price=9.0, caterer=admin2)
+    meal33 = Meal(name="Potatoes & Meat", price=12, caterer=admin2)
+    meal44 = Meal(name="Spaghetti", price=11, caterer=admin2)
+
+    menu1 = Menu()
+    menu1.caterer = admin1
+    menu1.items.append(meal1)
+    menu1.items.append(meal2)
+    menu1.items.append(meal3)
+    menu1.items.append(meal4)
+
+    menu2 = Menu()
+    menu2.caterer = admin1
+    menu2.items.append(meal1)
+    menu2.items.append(meal2)
+    menu2.items.append(meal3)
+    menu2.items.append(meal4)
+
+    order1 = Order(meal=meal1, customer=customer1, caterer=admin1)
+    order2 = Order(meal=meal3, customer=customer2, caterer=admin1)
 
     day1 = Day(name="Monday")
     db.session.add(day1)
@@ -74,15 +94,20 @@ def insert_table_data(db):
     db.session.add(day7)
     db.session.commit()
 
-    db.session.add(customer1)
-    db.session.add(customer2)
-    db.session.add(admin1)
-    db.session.add(admin2)
-
     db.session.add(meal1)
     db.session.add(meal2)
     db.session.add(meal3)
-    db.session.add(menu)
+    db.session.add(meal4)
+
+    db.session.add(meal11)
+    db.session.add(meal22)
+    db.session.add(meal33)
+    db.session.add(meal44)
+
+    menu1.day_id = 4
+    menu2.day_id = 5
+    db.session.add(menu1)
+    db.session.add(menu2)
 
     db.session.add(order1)
     db.session.add(order2)

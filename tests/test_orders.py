@@ -23,7 +23,7 @@ class OrderTestCase(BaseTest):
 
         order = json.loads(self.order)
         self.assertIn(str(order["meal_id"]),
-                      str(res_data['order']['meal']['id']))
+                      str(res_data['meal']['id']))
 
     def test_api_caterer_should_not_create_order(self):
         # A customer can create an order
@@ -73,12 +73,14 @@ class OrderTestCase(BaseTest):
         self.assertEqual(res.status_code, 201)
         data = json.loads(res.data.decode())
 
-        new_order_id = data['order']['id']
+        print(data)
+        new_order_id = data['id']
         menu_list = json.loads(self.menu_list)
 
         rs = self.client.put('/api/v1/orders/' + str(new_order_id),
                              data=json.dumps(
-                                 {'meal_id': menu_list["meal_ids"][2]}),
+                                 {'caterer_id': 1,
+                                  'meal_id': menu_list["meal_ids"][2]}),
                              content_type='application/json',
                              headers=dict(
                                  Authorization='JWT ' + self.customer_token))
@@ -108,7 +110,7 @@ class OrderTestCase(BaseTest):
 
         self.assertEqual(res.status_code, 201)
         response_data = json.loads(res.data.decode())
-        new_id = response_data['order']['id']
+        new_id = response_data['id']
 
         res = self.client.delete(
             '/api/v1/orders/' +

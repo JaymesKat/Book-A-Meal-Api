@@ -23,7 +23,7 @@ class BaseModel(db.Model):
 
 
 class User(BaseModel):
-    __tablename__ = "users"
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(30))
     last_name = db.Column(db.String(30))
@@ -35,9 +35,13 @@ class User(BaseModel):
     email = db.Column(db.String(60), unique=True, index=True, nullable=False)
     is_caterer = db.Column(db.Boolean, default=False)
     password_hash = db.Column(db.String(128), nullable=False)
+    orders_received = db.relationship(
+        'Order',
+        foreign_keys='Order.caterer_id',
+        cascade='all, delete-orphan')
     orders = db.relationship(
         'Order',
-        backref='user',
+        foreign_keys='Order.user_id',
         cascade='all, delete-orphan')
 
     @property
@@ -72,25 +76,26 @@ menu_items = db.Table(
 
 
 class Meal(BaseModel):
-    __tablename__ = "meals"
+    __tablename__ = 'meals'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(40))
     price = db.Column(db.Float)
+    caterer_id = db.Column(db.Integer, db.ForeignKey('users.id'),
+                         nullable=True)
     orders = db.relationship(
         'Order',
         backref='meal',
         cascade='all, delete-orphan')
+    caterer = db.relationship('User',
+                              foreign_keys=[caterer_id])
 
     def __repr__(self):
         return '<Meal {}: {}>'.format(self.id, self.name)
 
-    def __init__(self, name, price):
-        self.name = name
-        self.price = price
 
 
 class Day(BaseModel):
-    __tablename__ = "days"
+    __tablename__ = 'days'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String,
                      default=calendar.day_name[my_date.weekday()],
@@ -98,23 +103,33 @@ class Day(BaseModel):
 
 
 class Menu(BaseModel):
-    __tablename__ = "menu"
+    __tablename__ = 'menu'
     id = db.Column(db.Integer, primary_key=True)
     date_created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    caterer_id = db.Column(db.Integer, db.ForeignKey('users.id'),
+                         nullable=True)
     day_id = db.Column(db.Integer, db.ForeignKey('days.id'),
                        default=my_date.weekday()+1,
                        nullable=True)
     items = db.relationship('Meal', secondary=menu_items, lazy='subquery',
                             backref=db.backref('menu', lazy=True))
+    caterer = db.relationship('User',
+                              foreign_keys=[caterer_id])
 
 
 class Order(BaseModel):
-    __tablename__ = "orders"
+    __tablename__ = 'orders'
     id = db.Column(db.Integer, primary_key=True)
     date_submitted = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     completed = db.Column(db.Boolean, default=False)
     meal_id = db.Column(db.Integer, db.ForeignKey('meals.id'), nullable=False)
+    caterer_id = db.Column(db.Integer, db.ForeignKey('users.id'),
+                           nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    customer = db.relationship('User',
+                               foreign_keys=[user_id])
+    caterer = db.relationship('User',
+                              foreign_keys=[caterer_id])
 
     def __repr__(self):
         return '<Order {}: Meal id:{} by User id:{} at {}>' % format(
